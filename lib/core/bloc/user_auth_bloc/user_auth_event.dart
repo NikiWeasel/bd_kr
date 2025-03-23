@@ -14,3 +14,5 @@ class RegisterUser extends UserAuthEvent {
 
   RegisterUser({required this.inputUser});
 }
+
+class LogOutUser extends UserAuthEvent {}

@@ -85,6 +85,7 @@ class _CarBottomSheetState extends State<CarBottomSheet> {
   @override
   void initState() {
     super.initState();
+    idController = TextEditingController();
     engineVolumeController = TextEditingController();
     colorIdController = TextEditingController();
     enginePowerController = TextEditingController();
@@ -159,7 +160,7 @@ class _CarBottomSheetState extends State<CarBottomSheet> {
     bodyTypeIdController.dispose();
     brandIdController.dispose();
     ownerIdController.dispose();
-    super.dispose();
+    idController.dispose();
   }
 
   @override

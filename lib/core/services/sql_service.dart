@@ -83,6 +83,7 @@ class SqlService {
       await _createDb(db);
     }
 
+    print(myPath);
     return db;
 
     // return await databaseFactoryUsed.openDatabase(myPath,
@@ -94,7 +95,7 @@ class SqlService {
   Future<void> _createDb(Database db) async {
     await db.execute('''
   CREATE TABLE users (
-  id INTEGER PRIMARY KEY, 
+  id TEXT PRIMARY KEY, 
   login TEXT NOT NULL,
   phone_number TEXT NOT NULL,
   password TEXT NOT NULL,

@@ -106,6 +106,7 @@ class _AuthScreenState extends State<AuthScreen> {
                           height: 8,
                         ),
                         TextFormField(
+                          key: const ValueKey('number'),
                           decoration: InputDecoration(
                               label: const Text('Номер телефона'),
                               border: OutlineInputBorder(
@@ -129,6 +130,7 @@ class _AuthScreenState extends State<AuthScreen> {
                         height: 8,
                       ),
                       TextFormField(
+                        key: const ValueKey('login'),
                         decoration: InputDecoration(
                             label: const Text('Логин'),
                             border: OutlineInputBorder(
@@ -148,6 +150,7 @@ class _AuthScreenState extends State<AuthScreen> {
                         height: 8,
                       ),
                       TextFormField(
+                        key: const ValueKey('password'),
                         obscureText: isVisible,
                         decoration: InputDecoration(
                             label: const Text('Пароль'),

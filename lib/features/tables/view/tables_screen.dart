@@ -136,7 +136,6 @@ class _TablesScreenState extends State<TablesScreen> {
       case 'car_brands':
         showModalBottomSheet(
           context: context,
-          isScrollControlled: true,
           builder: (context) => SingleChildScrollView(
             child: CarBrandBottomSheet(
               carBrand: rowToEdit,
@@ -227,7 +226,6 @@ class _TablesScreenState extends State<TablesScreen> {
       case 'cars':
         showModalBottomSheet(
           context: context,
-          isScrollControlled: true,
           builder: (context) => SingleChildScrollView(
             child: CarBottomSheet(
               car: rowToEdit,

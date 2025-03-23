@@ -27,6 +27,7 @@ class App extends StatelessWidget {
                 windowLabel: state.user.isAdmin
                     ? 'База данных ГИБДД [Доступ: Администратор]'
                     : 'База данных ГИБДД [Доступ: Пользователь]',
+                showLogOutButton: true,
               ),
               Expanded(
                 child: TablesScreen(
@@ -39,7 +40,8 @@ class App extends StatelessWidget {
         return const Column(
           children: [
             WindowTitleBar(
-              windowLabel: '',
+              windowLabel: 'Вход в базу данных ГИБДД',
+              showLogOutButton: false,
             ),
             Expanded(child: AuthScreen()),
           ],

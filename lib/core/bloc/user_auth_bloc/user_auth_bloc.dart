@@ -45,5 +45,15 @@ class UserAuthBloc extends Bloc<UserAuthEvent, UserAuthState> {
         emit(UserAuthError(errorMessage: e.toString()));
       }
     });
+
+    on<LogOutUser>((event, emit) async {
+      emit(UserAuthLoading());
+      try {
+        currentUser = User.empty();
+        emit(UserAuthLoaded(user: currentUser));
+      } catch (e) {
+        emit(UserAuthError(errorMessage: e.toString()));
+      }
+    });
   }
 }
