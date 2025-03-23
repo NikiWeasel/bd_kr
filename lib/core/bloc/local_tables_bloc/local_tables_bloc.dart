@@ -66,8 +66,12 @@ class LocalTablesBloc extends Bloc<LocalTablesEvent, LocalTablesState> {
     on<SearchLocalTableRow>((event, emit) async {
       emit(LocalTablesLoading());
       try {
-        localTables =
+        var newTables =
             await sqlService.searchInTable(event.tableRow, event.sqList);
+        // var newTables = AllTables.emptyTables();
+
+        localTables.insertFilteredTable(
+            event.tableName, newTables.parentTable[event.tableName]!);
 
         emit(LocalTablesLoaded(allTables: localTables));
       } catch (e) {

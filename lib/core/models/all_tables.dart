@@ -42,15 +42,6 @@ class AllTables {
   }
 
   void updateElement(String tableName, dynamic value, dynamic id) {
-    // removeElement(tableName, oldValue);
-    // addElement(tableName, newValue);
-    // for (var e in parentTable[tableName]!) {
-    //   print(e.id);
-    // }
-    // print(parentTable);
-    // print(tableName);
-    // print(value.id);
-
     int? index;
     if (value is OwnerInfo) {
       index = parentTable[tableName]?.indexWhere(
@@ -61,9 +52,11 @@ class AllTables {
         (element) => element.id == id,
       );
     }
-
-    // print(index);
     parentTable[tableName]?.removeAt(index!);
     parentTable[tableName]?.insert(index!, value);
+  }
+
+  void insertFilteredTable(String tableName, List<dynamic> value) {
+    parentTable = Map.from(parentTable)..[tableName] = value;
   }
 }

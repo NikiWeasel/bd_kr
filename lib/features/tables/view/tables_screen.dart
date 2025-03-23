@@ -49,7 +49,7 @@ class _TablesScreenState extends State<TablesScreen> {
   ];
 
   List<String> tableNames = [];
-  List<String> tableColumnNames = [];
+  Map<String, dynamic> tableColumnNames = {};
   List<dynamic> activeTable = [];
   String activeTableName = '';
 
@@ -73,14 +73,14 @@ class _TablesScreenState extends State<TablesScreen> {
     if (list.isEmpty) return;
     // print('object');
 
-    tableColumnNames = (list[0].toMap() as Map<String, dynamic>).keys.toList();
+    tableColumnNames = (list[0].toMap() as Map<String, dynamic>);
 
     // print(tableColumnNames);
 
     tableColumnsDropdownMenuEntryList.clear();
-    for (var e in tableColumnNames) {
+    for (var e in tableColumnNames.entries) {
       tableColumnsDropdownMenuEntryList
-          .add(DropdownMenuEntry(value: e, label: e));
+          .add(DropdownMenuEntry(value: e.value, label: e.key.toString()));
     }
     // print('tableColumnNames');
     // print(tableColumnNames);
@@ -305,7 +305,7 @@ class _TablesScreenState extends State<TablesScreen> {
       },
       child: BlocBuilder<LocalTablesBloc, LocalTablesState>(
         builder: (context, state) {
-          // print(state);
+          print(state);
 
           if (state is LocalTablesLoaded) {
             // print(state.allTables.parentTable);
@@ -482,7 +482,8 @@ class _TablesScreenState extends State<TablesScreen> {
                                     context.read<LocalTablesBloc>().add(
                                         SearchLocalTableRow(
                                             tableRow: activeTable[0],
-                                            sqList: searchQueryList));
+                                            sqList: searchQueryList,
+                                            tableName: activeTableName));
                                   },
                                   child: const Icon(Icons.search),
                                 ),

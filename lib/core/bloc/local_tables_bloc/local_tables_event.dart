@@ -35,8 +35,10 @@ class DeleteLocalTableRow extends LocalTablesEvent {
 }
 
 class SearchLocalTableRow extends LocalTablesEvent {
+  final String tableName;
   final dynamic tableRow;
   final List<SearchQuery> sqList;
 
-  SearchLocalTableRow({required this.sqList, required this.tableRow});
+  SearchLocalTableRow(
+      {required this.tableName, required this.sqList, required this.tableRow});
 }

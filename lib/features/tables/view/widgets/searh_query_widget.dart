@@ -1,8 +1,9 @@
 import 'package:bd_kr/core/models/search_query.dart';
+import 'package:bd_kr/core/utils/snackbar_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class SearhQueryWidget extends StatelessWidget {
+class SearhQueryWidget extends StatefulWidget {
   const SearhQueryWidget(
       {super.key,
       required this.index,
@@ -19,53 +20,86 @@ class SearhQueryWidget extends StatelessWidget {
   final List<DropdownMenuEntry> tableQTypesDropdownMenuEntryList;
 
   @override
+  State<SearhQueryWidget> createState() => _SearhQueryWidgetState();
+}
+
+class _SearhQueryWidgetState extends State<SearhQueryWidget> {
+  late List<DropdownMenuEntry> tableQTypesList;
+  late dynamic selectedColumn;
+  String? selectedType;
+  String enteredString = '';
+
+  @override
+  void initState() {
+    super.initState();
+    tableQTypesList = List.from(widget.tableQTypesDropdownMenuEntryList);
+    selectedColumn = widget.tableColumnsDropdownMenuEntryList.first.value;
+
+    selectedType =
+        tableQTypesList.isNotEmpty ? tableQTypesList.first.value : null;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    String selectedColumn = tableColumnsDropdownMenuEntryList.first.value;
-    String selectedType = tableQTypesDropdownMenuEntryList.first.value;
-    String enteredString = '';
+    void changeTypes() {
+      setState(() {
+        selectedType = null;
+        if (selectedColumn is String) {
+          tableQTypesList = List.from(tableQTypesList.sublist(5, 7));
+        } else {
+          tableQTypesList = List.from(widget.tableQTypesDropdownMenuEntryList);
+        }
+      });
+    }
 
     void onChange() {
       final sq = SearchQuery(
           searchColumn: selectedColumn,
-          searchType: selectedType,
+          searchType: selectedType!,
           searchString: enteredString);
 
-      if (enteredString.isEmpty) return;
-      onSaveQuary(index, sq);
+      if (enteredString.isEmpty || selectedType == null) {
+        return;
+      }
+      widget.onSaveQuary(widget.index, sq);
     }
 
     return Column(
       children: [
-        (index == 0)
+        (widget.index == 0)
             ? const SizedBox.shrink()
             : Row(
                 children: [
                   Text(
-                    'Фильтр $index',
+                    'Фильтр ${widget.index}',
                     style: Theme.of(context).textTheme.titleMedium!,
                   ),
                   const Spacer(),
                   IconButton(
                       onPressed: () {
                         // print(index);
-                        onDeleteQuary(index);
+                        widget.onDeleteQuary(widget.index);
                       },
                       icon: const Icon(Icons.close))
                 ],
               ),
         Row(
           children: [
-            tableColumnsDropdownMenuEntryList.isNotEmpty
+            widget.tableColumnsDropdownMenuEntryList.isNotEmpty
                 ? DropdownMenu(
                     width: 162,
-                    dropdownMenuEntries: tableColumnsDropdownMenuEntryList,
-                    initialSelection:
-                        tableColumnsDropdownMenuEntryList.isNotEmpty
-                            ? tableColumnsDropdownMenuEntryList.first.value
-                            : null,
+                    dropdownMenuEntries:
+                        widget.tableColumnsDropdownMenuEntryList,
+                    initialSelection: widget
+                            .tableColumnsDropdownMenuEntryList.isNotEmpty
+                        ? widget.tableColumnsDropdownMenuEntryList.first.value
+                        : null,
                     onSelected: (value) {
                       if (value == null) return;
                       selectedColumn = value;
+
+                      print('ONTAP');
+                      changeTypes();
                     },
                   )
                 : const SizedBox.shrink(),
@@ -73,11 +107,12 @@ class SearhQueryWidget extends StatelessWidget {
               width: 8,
             ),
             DropdownMenu(
+              key: ValueKey(tableQTypesList.length),
               width: 130,
-              dropdownMenuEntries: tableQTypesDropdownMenuEntryList,
-              initialSelection: tableQTypesDropdownMenuEntryList.isNotEmpty
-                  ? tableQTypesDropdownMenuEntryList.first.value
-                  : null,
+              dropdownMenuEntries: tableQTypesList,
+              // initialSelection: tableQTypesList.isNotEmpty
+              //     ? tableQTypesList.first.value
+              //     : null,
               onSelected: (value) {
                 if (value == null) return;
                 selectedType = value;
