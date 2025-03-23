@@ -124,9 +124,8 @@ class _DistrictBottomSheetState extends State<DistrictBottomSheet> {
                           .read<TableActionsBloc>()
                           .add(AddTableRow(tableRow: newDistrict));
                     } else {
-                      context
-                          .read<TableActionsBloc>()
-                          .add(UpdateTableRow(tableRow: newDistrict));
+                      context.read<TableActionsBloc>().add(UpdateTableRow(
+                          tableRow: newDistrict, id: widget.district?.id));
                     }
                     Navigator.of(context).pop();
                   }

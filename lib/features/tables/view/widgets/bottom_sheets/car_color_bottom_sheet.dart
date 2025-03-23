@@ -134,9 +134,8 @@ class _CarColorBottomSheetState extends State<CarColorBottomSheet> {
                           .read<TableActionsBloc>()
                           .add(AddTableRow(tableRow: newCarColor));
                     } else {
-                      context
-                          .read<TableActionsBloc>()
-                          .add(UpdateTableRow(tableRow: newCarColor));
+                      context.read<TableActionsBloc>().add(UpdateTableRow(
+                          tableRow: newCarColor, id: widget.carColor?.id));
                     }
 
                     Navigator.of(context).pop();

@@ -111,9 +111,8 @@ class _NoteBottomSheetState extends State<NoteBottomSheet> {
                         .read<TableActionsBloc>()
                         .add(AddTableRow(tableRow: newNote));
                   } else {
-                    context
-                        .read<TableActionsBloc>()
-                        .add(UpdateTableRow(tableRow: newNote));
+                    context.read<TableActionsBloc>().add(
+                        UpdateTableRow(tableRow: newNote, id: widget.note?.id));
                   }
                   Navigator.of(context).pop();
                 }

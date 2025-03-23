@@ -106,7 +106,7 @@ class _MyDataTableState extends State<MyDataTable> {
                     onLongPress: () {
                       showTableDialog(widget.table[i]);
                     },
-                    child: TextLabel(label: cell)),
+                    child: TextLabel(label: cell.toString())),
               )
           ])
       ],

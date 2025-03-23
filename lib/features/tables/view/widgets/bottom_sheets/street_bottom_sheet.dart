@@ -131,9 +131,8 @@ class _StreetBottomSheetState extends State<StreetBottomSheet> {
                           .read<TableActionsBloc>()
                           .add(AddTableRow(tableRow: newStreet));
                     } else {
-                      context
-                          .read<TableActionsBloc>()
-                          .add(UpdateTableRow(tableRow: newStreet));
+                      context.read<TableActionsBloc>().add(UpdateTableRow(
+                          tableRow: newStreet, id: widget.street?.id));
                     }
 
                     Navigator.of(context).pop();

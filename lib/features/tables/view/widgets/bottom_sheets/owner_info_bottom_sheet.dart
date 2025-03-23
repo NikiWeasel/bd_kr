@@ -160,9 +160,8 @@ class _OwnerInfoBottomSheetState extends State<OwnerInfoBottomSheet> {
                           .read<TableActionsBloc>()
                           .add(AddTableRow(tableRow: newOwnerInfo));
                     } else {
-                      context
-                          .read<TableActionsBloc>()
-                          .add(UpdateTableRow(tableRow: newOwnerInfo));
+                      context.read<TableActionsBloc>().add(UpdateTableRow(
+                          tableRow: newOwnerInfo, id: widget.ownerInfo?.inn));
                     }
 
                     Navigator.of(context).pop();

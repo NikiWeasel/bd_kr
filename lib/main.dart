@@ -1,5 +1,6 @@
 import 'dart:ffi' as ffi;
 
+import 'package:bd_kr/core/bloc/local_tables_bloc/local_tables_bloc.dart';
 import 'package:bd_kr/core/services/sql_service.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/foundation.dart';
@@ -52,6 +53,9 @@ void main() {
 
   runApp(MultiBlocProvider(
     providers: [
+      BlocProvider(
+        create: (context) => LocalTablesBloc(sqlService),
+      ),
       BlocProvider(
         create: (context) => TableActionsBloc(sqlService),
       ),

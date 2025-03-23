@@ -67,7 +67,8 @@ class _CityBottomSheetState extends State<CityBottomSheet> {
               children: [
                 Text(
                   widget.city == null ? 'Добавить' : 'Изменить',
-                  style: Theme.of(context)
+                  style: Theme
+                      .of(context)
                       .textTheme
                       .titleLarge!
                       .copyWith(fontWeight: FontWeight.bold),
@@ -136,7 +137,8 @@ class _CityBottomSheetState extends State<CityBottomSheet> {
                     } else {
                       context
                           .read<TableActionsBloc>()
-                          .add(UpdateTableRow(tableRow: newCity));
+                          .add(UpdateTableRow(
+                          tableRow: newCity, id: widget.city?.id));
                     }
 
                     Navigator.of(context).pop();

@@ -19,6 +19,10 @@ import 'package:flutter/material.dart';
 import 'package:bd_kr/core/bloc/table_actions_bloc/table_actions_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:bd_kr/core/bloc/local_tables_bloc/local_tables_bloc.dart';
+
+import 'package:bd_kr/core/utils/snackbar_utils.dart';
+
 class TablesScreen extends StatefulWidget {
   const TablesScreen({super.key, required this.isAdmin});
 
@@ -260,239 +264,277 @@ class _TablesScreenState extends State<TablesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<TableActionsBloc, TableActionsState>(
-      builder: (context, state) {
-        if (state is TableActionsLoaded) {
-          // print(state.allTables.parentTable);
-          var allTablesMap = state.allTables.parentTable;
-          fillTableDropdownMenuEntryList();
-          tableNames = state.allTables.getTableNames();
+    return BlocListener<TableActionsBloc, TableActionsState>(
+      listener: (context, state) {
+        // if (state is TableActionsLoading) {
+        //   ScaffoldMessenger.of(context).clearSnackBars();
+        //   showSnackBar(context, 'Загрузка...',
+        //       duration: const Duration(seconds: 60));
+        // }
+        print(state);
 
-          fillColumnsNames(activeTable);
+        if (state is TableActionsAdded) {
+          ScaffoldMessenger.of(context).clearSnackBars();
 
-          if (tableDropdownMenuEntryList.isEmpty) {
-            context.read<TableActionsBloc>().add(FetchTablesData());
-          }
+          showSnackBar(context, 'Строка добавлена.');
 
-          print(activeTable);
-          print(allTablesMap);
-          print(tableColumnsDropdownMenuEntryList);
-          // print(tableQTypesDropdownMenuEntryList);
+          context.read<LocalTablesBloc>().add(AddLocalTableRow(
+              tableName: activeTableName, value: state.tableRow));
+        }
+        if (state is TableActionsUpdated) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          showSnackBar(context, 'Строка обновлена');
 
-          return Scaffold(
-              body: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        Card(
-                          color:
-                              Theme.of(context).colorScheme.secondaryContainer,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: SizedBox(
-                              width: 300,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Текущая таблица',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium!,
-                                  ),
-                                  const SizedBox(
-                                    height: 8,
-                                  ),
-                                  DropdownMenu(
-                                    width: 300,
-                                    dropdownMenuEntries:
-                                        tableDropdownMenuEntryList,
-                                    initialSelection:
-                                        tableDropdownMenuEntryList.isNotEmpty
-                                            ? tableDropdownMenuEntryList.first
-                                            : null,
-                                    onSelected: (value) {
-                                      if (value == null) return;
+          context.read<LocalTablesBloc>().add(UpdateLocalTableRow(
+                tableName: activeTableName,
+                value: state.tableRow,
+                id: state.id,
+              ));
+        }
+        if (state is TableActionsDeleted) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          showSnackBar(context, 'Строка удалена.');
 
-                                      setState(() {
-                                        activeTable = allTablesMap[value]!;
-                                        activeTableName = value!;
-                                      });
-                                    },
-                                  ),
-                                  const SizedBox(
-                                    height: 16,
-                                  ),
-                                  Text(
-                                    'Поиск по таблице',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium!,
-                                  ),
-                                  for (int i = 0;
-                                      i < searchQueryList.length;
-                                      i++) ...[
+          context.read<LocalTablesBloc>().add(DeleteLocalTableRow(
+              tableName: activeTableName, value: state.tableRow));
+        }
+        if (state is TableActionsError) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          showSnackBar(context, 'Произошла ошибка: ${state.errorMessage}');
+        }
+      },
+      child: BlocBuilder<LocalTablesBloc, LocalTablesState>(
+        builder: (context, state) {
+          // print(state);
+
+          if (state is LocalTablesLoaded) {
+            // print(state.allTables.parentTable);
+            var allTablesMap = state.allTables.parentTable;
+            fillTableDropdownMenuEntryList();
+            tableNames = state.allTables.getTableNames();
+
+            fillColumnsNames(activeTable);
+
+            if (tableDropdownMenuEntryList.isEmpty) {
+              context.read<LocalTablesBloc>().add(FetchLocalTablesData());
+            }
+
+            // print(activeTable);
+            // print(allTablesMap);
+            // print(tableColumnsDropdownMenuEntryList);
+            // print(tableQTypesDropdownMenuEntryList);
+
+            return Scaffold(
+                body: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          Card(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .secondaryContainer,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: SizedBox(
+                                width: 300,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Текущая таблица',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium!,
+                                    ),
+                                    const SizedBox(
+                                      height: 8,
+                                    ),
+                                    DropdownMenu(
+                                      width: 300,
+                                      dropdownMenuEntries:
+                                          tableDropdownMenuEntryList,
+                                      initialSelection:
+                                          tableDropdownMenuEntryList.isNotEmpty
+                                              ? tableDropdownMenuEntryList.first
+                                              : null,
+                                      onSelected: (value) {
+                                        if (value == null) return;
+
+                                        setState(() {
+                                          activeTable = allTablesMap[value]!;
+                                          activeTableName = value!;
+                                        });
+                                      },
+                                    ),
                                     const SizedBox(
                                       height: 16,
                                     ),
-                                    (tableColumnsDropdownMenuEntryList
-                                                .isEmpty ||
-                                            tableQTypesDropdownMenuEntryList
-                                                .isEmpty)
-                                        ? const SizedBox.shrink()
-                                        : SearhQueryWidget(
-                                            key: ValueKey(searchQueryList[i]),
-                                            //TODO надо сделать key чтобы старые запросв не затиралсь
-                                            index: i,
-                                            onSaveQuary: onSaveQuary,
-                                            tableColumnsDropdownMenuEntryList:
-                                                tableColumnsDropdownMenuEntryList,
-                                            tableQTypesDropdownMenuEntryList:
-                                                tableQTypesDropdownMenuEntryList,
-                                            onDeleteQuary: onDeleteQuary,
-                                          ),
-                                    const SizedBox(
-                                      height: 16,
+                                    Text(
+                                      'Поиск по таблице',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium!,
                                     ),
-                                    Container(
-                                        width: double.infinity,
-                                        decoration: BoxDecoration(
-                                          border: Border(
-                                              bottom: BorderSide(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .onSurface)),
-                                        ))
+                                    for (int i = 0;
+                                        i < searchQueryList.length;
+                                        i++) ...[
+                                      const SizedBox(
+                                        height: 16,
+                                      ),
+                                      (tableColumnsDropdownMenuEntryList
+                                                  .isEmpty ||
+                                              tableQTypesDropdownMenuEntryList
+                                                  .isEmpty)
+                                          ? const SizedBox.shrink()
+                                          : SearhQueryWidget(
+                                              key: ValueKey(searchQueryList[i]),
+                                              index: i,
+                                              onSaveQuary: onSaveQuary,
+                                              tableColumnsDropdownMenuEntryList:
+                                                  tableColumnsDropdownMenuEntryList,
+                                              tableQTypesDropdownMenuEntryList:
+                                                  tableQTypesDropdownMenuEntryList,
+                                              onDeleteQuary: onDeleteQuary,
+                                            ),
+                                      const SizedBox(
+                                        height: 16,
+                                      ),
+                                      Container(
+                                          width: double.infinity,
+                                          decoration: BoxDecoration(
+                                            border: Border(
+                                                bottom: BorderSide(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .onSurface)),
+                                          ))
+                                    ],
+                                    const SizedBox(
+                                      height: 8,
+                                    ),
+                                    Align(
+                                        alignment: Alignment.center,
+                                        child: IconButton(
+                                            onPressed: () {
+                                              if (activeTable.isEmpty) {
+                                                showSnackbar(
+                                                    'Выбeрите таблицу');
+                                                return;
+                                              }
+                                              addSearchQuary();
+                                            },
+                                            icon: const Icon(Icons.add))),
                                   ],
-                                  const SizedBox(
-                                    height: 8,
-                                  ),
-                                  Align(
-                                      alignment: Alignment.center,
-                                      child: IconButton(
-                                          onPressed: () {
-                                            if (activeTable.isEmpty) {
-                                              showSnackbar('Выбeрите таблицу');
-                                              return;
-                                            }
-                                            addSearchQuary();
-                                          },
-                                          icon: const Icon(Icons.add))),
-                                ],
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        const SizedBox(
-                          height: 50,
-                        ),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                      child: SingleChildScrollView(
-                          child: Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: MyDataTable(
-                      table: activeTable,
-                      openBottomSheet: openBottomSheet,
-                      tableName: activeTableName,
-                      isReadOnly: !widget.isAdmin,
-                    ),
-                  )))
-                ],
-              ),
-              floatingActionButtonAnimator: null,
-              floatingActionButton: Stack(
-                children: <Widget>[
-                  Align(
-                      alignment: Alignment.bottomLeft,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Row(
-                            children: [
-                              const SizedBox(
-                                width: 32,
-                              ),
-                              FloatingActionButton(
-                                heroTag: 'search',
-                                onPressed: () {
-                                  if (activeTable.isEmpty) return;
-                                  if (searchQueryList.any(
-                                        (element) => element.searchString == '',
-                                      ) ||
-                                      searchQueryList.any(
-                                        (element) => element.searchColumn == '',
-                                      )) {
-                                    showSnackbar('Заполните поля поиска');
-                                    return;
-                                  }
-
-                                  context.read<TableActionsBloc>().add(
-                                      SearchTableRow(
-                                          tableRow: activeTable[0],
-                                          sqList: searchQueryList));
-                                },
-                                child: const Icon(Icons.search),
-                              ),
-                              const SizedBox(
-                                width: 8,
-                              ),
-                              FloatingActionButton(
-                                heroTag: 'reset',
-                                onPressed: () {
-                                  context
-                                      .read<TableActionsBloc>()
-                                      .add(FetchTablesData());
-                                  //
-                                  // setState(() {
-                                  //   if (!tableDropdownMenuEntryList.contains(
-                                  //       _selectedValueNotifier.value)) {
-                                  //     _selectedValueNotifier.value =
-                                  //         tableDropdownMenuEntryList
-                                  //             .first; // Если нет, устанавливаем первое значение
-                                  //   }
-                                  // });
-                                },
-                                child: const Icon(Icons.cached_sharp),
-                              )
-                            ],
+                          const SizedBox(
+                            height: 50,
                           ),
                         ],
-                      )),
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: widget.isAdmin
-                        ? FloatingActionButton(
-                            heroTag: 'add',
-                            clipBehavior: Clip.none,
-                            child: const Icon(Icons.add),
-                            onPressed: () {
-                              openBottomSheet(activeTableName, null);
-                            },
-                          )
-                        : const SizedBox.shrink(),
-                  ),
-                ],
-              ));
-        }
-        // print(state);
-        return const Scaffold(
-          body: Center(
-            child: CircularProgressIndicator(),
-          ),
-        );
-      },
-      listener: (BuildContext context, TableActionsState state) {
-        if (state is TableActionsError) {
-          // print(state.errorMessage);
-          ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Center(child: Text(state.errorMessage))));
-        }
-      },
+                      ),
+                    ),
+                    Expanded(
+                        child: SingleChildScrollView(
+                            child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: MyDataTable(
+                        table: activeTable,
+                        openBottomSheet: openBottomSheet,
+                        tableName: activeTableName,
+                        isReadOnly: !widget.isAdmin,
+                      ),
+                    )))
+                  ],
+                ),
+                floatingActionButtonAnimator: null,
+                floatingActionButton: Stack(
+                  children: <Widget>[
+                    Align(
+                        alignment: Alignment.bottomLeft,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Row(
+                              children: [
+                                const SizedBox(
+                                  width: 32,
+                                ),
+                                FloatingActionButton(
+                                  heroTag: 'search',
+                                  onPressed: () {
+                                    if (activeTable.isEmpty) return;
+                                    if (searchQueryList.any(
+                                          (element) =>
+                                              element.searchString == '',
+                                        ) ||
+                                        searchQueryList.any(
+                                          (element) =>
+                                              element.searchColumn == '',
+                                        )) {
+                                      showSnackbar('Заполните поля поиска');
+                                      return;
+                                    }
+
+                                    context.read<LocalTablesBloc>().add(
+                                        SearchLocalTableRow(
+                                            tableRow: activeTable[0],
+                                            sqList: searchQueryList));
+                                  },
+                                  child: const Icon(Icons.search),
+                                ),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                FloatingActionButton(
+                                  heroTag: 'reset',
+                                  onPressed: () {
+                                    context
+                                        .read<LocalTablesBloc>()
+                                        .add(FetchLocalTablesData());
+                                    //
+                                    // setState(() {
+                                    //   if (!tableDropdownMenuEntryList.contains(
+                                    //       _selectedValueNotifier.value)) {
+                                    //     _selectedValueNotifier.value =
+                                    //         tableDropdownMenuEntryList
+                                    //             .first; // Если нет, устанавливаем первое значение
+                                    //   }
+                                    // });
+                                  },
+                                  child: const Icon(Icons.cached_sharp),
+                                )
+                              ],
+                            ),
+                          ],
+                        )),
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: widget.isAdmin
+                          ? FloatingActionButton(
+                              heroTag: 'add',
+                              clipBehavior: Clip.none,
+                              child: const Icon(Icons.add),
+                              onPressed: () {
+                                openBottomSheet(activeTableName, null);
+                              },
+                            )
+                          : const SizedBox.shrink(),
+                    ),
+                  ],
+                ));
+          }
+          // print(state);
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        },
+      ),
     );
   }
 }

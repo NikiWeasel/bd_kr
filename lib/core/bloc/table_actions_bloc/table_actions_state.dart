@@ -1,10 +1,5 @@
 part of 'table_actions_bloc.dart';
 
-// @immutable
-// sealed class TableActionsState {}
-//
-// final class TableActionsInitial extends TableActionsState {}
-
 @immutable
 sealed class TableActionsState {}
 
@@ -12,10 +7,26 @@ final class TableActionsInitial extends TableActionsState {}
 
 class TableActionsLoading extends TableActionsState {}
 
-class TableActionsLoaded extends TableActionsState {
-  final AllTables allTables;
+class TableActionsAdded extends TableActionsState {
+  final dynamic tableRow;
 
-  TableActionsLoaded({required this.allTables});
+  TableActionsAdded({required this.tableRow});
+}
+
+class TableActionsUpdated extends TableActionsState {
+  final dynamic tableRow;
+  final dynamic id;
+
+  TableActionsUpdated({
+    required this.tableRow,
+    required this.id,
+  });
+}
+
+class TableActionsDeleted extends TableActionsState {
+  final dynamic tableRow;
+
+  TableActionsDeleted({required this.tableRow});
 }
 
 class TableActionsError extends TableActionsState {

@@ -10,6 +10,8 @@ import 'package:bd_kr/core/models/user.dart';
 
 import 'package:bd_kr/core/bloc/table_actions_bloc/table_actions_bloc.dart';
 
+import 'package:bd_kr/core/bloc/local_tables_bloc/local_tables_bloc.dart';
+
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
 
@@ -206,8 +208,8 @@ class _AuthScreenState extends State<AuthScreen> {
                                     .add(AuthUser(inputUser: inputUser));
                               }
                               context
-                                  .read<TableActionsBloc>()
-                                  .add(FetchTablesData());
+                                  .read<LocalTablesBloc>()
+                                  .add(FetchLocalTablesData());
                             }
                           },
                           child: Text(

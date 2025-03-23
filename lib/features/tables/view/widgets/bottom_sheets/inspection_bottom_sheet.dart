@@ -166,9 +166,8 @@ class _InspectionBottomSheetState extends State<InspectionBottomSheet> {
                         .read<TableActionsBloc>()
                         .add(AddTableRow(tableRow: newInspection));
                   } else {
-                    context
-                        .read<TableActionsBloc>()
-                        .add(UpdateTableRow(tableRow: newInspection));
+                    context.read<TableActionsBloc>().add(UpdateTableRow(
+                        tableRow: newInspection, id: widget.inspection?.id));
                   }
                   Navigator.of(context).pop();
                 }

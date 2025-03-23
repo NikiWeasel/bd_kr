@@ -11,26 +11,15 @@ part 'table_actions_state.dart';
 
 class TableActionsBloc extends Bloc<TableActionsEvent, TableActionsState> {
   final SqlService sqlService;
-  AllTables localTables = AllTables.emptyTables();
 
   TableActionsBloc(this.sqlService) : super(TableActionsInitial()) {
-    on<FetchTablesData>((event, emit) async {
-      emit(TableActionsLoading());
-      try {
-        localTables = await sqlService.loadTables();
-        emit(TableActionsLoaded(allTables: localTables));
-      } catch (e) {
-        emit(TableActionsError(errorMessage: e.toString()));
-      }
-    });
-
     on<AddTableRow>((event, emit) async {
       emit(TableActionsLoading());
       try {
-        sqlService.addTableRow(event.tableRow);
-        localTables = await sqlService.loadTables();
-        emit(TableActionsLoaded(allTables: localTables));
+        await sqlService.addTableRow(event.tableRow);
+        emit(TableActionsAdded(tableRow: event.tableRow));
       } catch (e) {
+        print(e.toString());
         emit(TableActionsError(errorMessage: e.toString()));
       }
     });
@@ -39,9 +28,10 @@ class TableActionsBloc extends Bloc<TableActionsEvent, TableActionsState> {
       emit(TableActionsLoading());
       try {
         sqlService.editTableRow(event.tableRow);
-        localTables = await sqlService.loadTables();
-        emit(TableActionsLoaded(allTables: localTables));
+        emit(TableActionsUpdated(tableRow: event.tableRow, id: event.id));
       } catch (e) {
+        print(e.toString());
+
         emit(TableActionsError(errorMessage: e.toString()));
       }
     });
@@ -50,22 +40,8 @@ class TableActionsBloc extends Bloc<TableActionsEvent, TableActionsState> {
       emit(TableActionsLoading());
       try {
         sqlService.deleteTableRow(event.tableRow);
-        localTables = await sqlService.loadTables();
-        emit(TableActionsLoaded(allTables: localTables));
+        emit(TableActionsDeleted(tableRow: event.tableRow));
       } catch (e) {
-        emit(TableActionsError(errorMessage: e.toString()));
-      }
-    });
-
-    on<SearchTableRow>((event, emit) async {
-      emit(TableActionsLoading());
-      try {
-        localTables =
-            await sqlService.searchInTable(event.tableRow, event.sqList);
-
-        emit(TableActionsLoaded(allTables: localTables));
-      } catch (e) {
-        print(e.toString());
         emit(TableActionsError(errorMessage: e.toString()));
       }
     });

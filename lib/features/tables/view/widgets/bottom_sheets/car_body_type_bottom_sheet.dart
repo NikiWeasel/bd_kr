@@ -68,7 +68,8 @@ class _CarBodyTypeBottomSheetState extends State<CarBodyTypeBottomSheet> {
               children: [
                 Text(
                   widget.carBodyType == null ? 'Добавить' : 'Изменить',
-                  style: Theme.of(context)
+                  style: Theme
+                      .of(context)
                       .textTheme
                       .titleLarge!
                       .copyWith(fontWeight: FontWeight.bold),
@@ -135,9 +136,9 @@ class _CarBodyTypeBottomSheetState extends State<CarBodyTypeBottomSheet> {
                           .read<TableActionsBloc>()
                           .add(AddTableRow(tableRow: newCarBodyType));
                     } else {
-                      context
-                          .read<TableActionsBloc>()
-                          .add(UpdateTableRow(tableRow: newCarBodyType));
+                      context.read<TableActionsBloc>().add(UpdateTableRow(
+                          tableRow: newCarBodyType,
+                          id: widget.carBodyType?.id));
                     }
 
                     Navigator.of(context).pop();

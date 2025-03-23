@@ -109,9 +109,8 @@ class _PhoneBottomSheetState extends State<PhoneBottomSheet> {
                         .read<TableActionsBloc>()
                         .add(AddTableRow(tableRow: newPhone));
                   } else {
-                    context
-                        .read<TableActionsBloc>()
-                        .add(UpdateTableRow(tableRow: newPhone));
+                    context.read<TableActionsBloc>().add(UpdateTableRow(
+                        tableRow: newPhone, id: widget.phone?.id));
                   }
                   Navigator.of(context).pop();
                 }

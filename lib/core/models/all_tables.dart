@@ -12,7 +12,7 @@ import 'package:bd_kr/core/table_models/phone.dart';
 import 'package:bd_kr/core/table_models/street.dart';
 
 class AllTables {
-  final Map<String, List<dynamic>> parentTable;
+  Map<String, List<dynamic>> parentTable;
 
   AllTables({required this.parentTable});
 
@@ -32,4 +32,38 @@ class AllTables {
         'inspections',
         'notes',
       ];
+
+  void addElement(String tableName, dynamic value) {
+    parentTable[tableName]?.add(value);
+  }
+
+  void removeElement(String tableName, dynamic value) {
+    parentTable[tableName]?.remove(value);
+  }
+
+  void updateElement(String tableName, dynamic value, dynamic id) {
+    // removeElement(tableName, oldValue);
+    // addElement(tableName, newValue);
+    // for (var e in parentTable[tableName]!) {
+    //   print(e.id);
+    // }
+    // print(parentTable);
+    // print(tableName);
+    // print(value.id);
+
+    int? index;
+    if (value is OwnerInfo) {
+      index = parentTable[tableName]?.indexWhere(
+        (element) => element.inn == id,
+      );
+    } else {
+      index = parentTable[tableName]?.indexWhere(
+        (element) => element.id == id,
+      );
+    }
+
+    // print(index);
+    parentTable[tableName]?.removeAt(index!);
+    parentTable[tableName]?.insert(index!, value);
+  }
 }

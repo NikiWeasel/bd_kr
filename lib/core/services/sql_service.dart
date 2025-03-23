@@ -31,32 +31,6 @@ import 'package:sqlite3/sqlite3.dart' as sqlite3;
 // }
 
 class SqlService {
-  // Future<Database> _getDatabase() async {
-  //   if ((defaultTargetPlatform == TargetPlatform.windows ||
-  //           defaultTargetPlatform == TargetPlatform.linux) &&
-  //       !kIsWeb) {
-  //     // Initialize FFI to be able to use database with Windows/Linux
-  //     // We use 'sqflite_ffi' if Linux or Windows, else we can use default sqlite (Android/IOS/Mac)
-  //     if (defaultTargetPlatform == TargetPlatform.linux) {
-  //       sqfliteFfiInit();
-  //     } else if (defaultTargetPlatform == TargetPlatform.windows) {
-  //       open.overrideFor(OperatingSystem.windows, _openSqliteUnderWindows);
-  //       final db = sqlite3.sqlite3.openInMemory();
-  //     }
-  //   }
-  //
-  //   databaseFactory = databaseFactoryFfi;
-  //
-  //   final dbPath = await sql.getDatabasesPath();
-  //   // print(dbPath);
-  //   final db = await sql.openDatabase(path.join(dbPath, 'gbdd.db'),
-  //       onCreate: (db, version) async {
-  //     await _createDb(db);
-  //   }, version: 1);
-  //
-  //   return db;
-  // }
-
   Future<Database> _getDatabase() async {
     DatabaseFactory databaseFactoryUsed;
 
@@ -83,13 +57,8 @@ class SqlService {
       await _createDb(db);
     }
 
-    print(myPath);
+    // print(myPath);
     return db;
-
-    // return await databaseFactoryUsed.openDatabase(myPath,
-    //     onCreate: (db, version) async {
-    //   await _createDb(db);
-    // });
   }
 
   Future<void> _createDb(Database db) async {
@@ -424,10 +393,10 @@ CREATE TABLE notes (
     return null;
   }
 
-  void addTableRow(dynamic newTableRow) async {
+  Future<void> addTableRow(dynamic newTableRow) async {
     final db = await _getDatabase();
 
-    db.insert(
+    await db.insert(
       newTableRow.getTableName(),
       replaceBools(newTableRow.toMap()),
     );

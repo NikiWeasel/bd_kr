@@ -135,9 +135,8 @@ class _CarBrandBottomSheetState extends State<CarBrandBottomSheet> {
                           .read<TableActionsBloc>()
                           .add(AddTableRow(tableRow: newCarBrand));
                     } else {
-                      context
-                          .read<TableActionsBloc>()
-                          .add(UpdateTableRow(tableRow: newCarBrand));
+                      context.read<TableActionsBloc>().add(UpdateTableRow(
+                          tableRow: newCarBrand, id: widget.carBrand?.id));
                     }
 
                     Navigator.of(context).pop();
