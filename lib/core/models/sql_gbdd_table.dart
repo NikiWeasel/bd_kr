@@ -1,0 +1,2 @@
+class SqlGbddTable {}
+//TODO удалить
