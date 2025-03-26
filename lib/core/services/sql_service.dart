@@ -208,7 +208,7 @@ CREATE TABLE notes (
       query += ' WHERE $where';
     }
 
-    // print(query);
+    print(query);
 
     final result = await db.rawQuery(query);
 
@@ -422,9 +422,11 @@ CREATE TABLE notes (
     // state = state.where((m) => m.id != noteToDelete.id).toList();
   }
 
-  Future<AllTables> searchInTable(
-      dynamic tableRow, List<SearchQuery> sqList) async {
-    AllTables allTables = await loadTables();
+  Future<List<dynamic>> searchInTable(
+      {required AllTables allTables,
+      required dynamic tableRow,
+      required List<SearchQuery> sqList}) async {
+    // AllTables allTables = await loadTables();
 
     // var loadedTable
     final result = await loadTableByName(tableRow.getTableName(),
@@ -436,9 +438,9 @@ CREATE TABLE notes (
     // print(allTables.parentTable);
     // print(allTables.parentTable[tableRow.getTableName()]);
 
-    allTables.parentTable[tableRow.getTableName()] = result;
+    // allTables.parentTable[tableRow.getTableName()] = result;
 
-    return allTables;
+    return result;
   }
 
   String getEndOfQuery(List<SearchQuery> sqList) {

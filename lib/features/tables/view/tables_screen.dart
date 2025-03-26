@@ -467,6 +467,8 @@ class _TablesScreenState extends State<TablesScreen> {
                                   heroTag: 'search',
                                   onPressed: () {
                                     if (activeTable.isEmpty) return;
+                                    print(searchQueryList);
+
                                     if (searchQueryList.any(
                                           (element) =>
                                               element.searchString == '',
@@ -527,6 +529,25 @@ class _TablesScreenState extends State<TablesScreen> {
                     ),
                   ],
                 ));
+          }
+          if (state is LocalTablesError) {
+            return Scaffold(
+              body: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(state.errorMessage),
+                    TextButton(
+                        onPressed: () {
+                          context
+                              .read<LocalTablesBloc>()
+                              .add(FetchLocalTablesData());
+                        },
+                        child: const Text('Обновить'))
+                  ],
+                ),
+              ),
+            );
           }
           // print(state);
           return const Scaffold(

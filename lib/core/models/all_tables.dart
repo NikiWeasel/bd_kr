@@ -57,6 +57,45 @@ class AllTables {
   }
 
   void insertFilteredTable(String tableName, List<dynamic> value) {
-    parentTable = Map.from(parentTable)..[tableName] = value;
+    // parentTable = Map.from(parentTable)..[tableName] = value;
+
+    print('parentTable[tableName]');
+    print(parentTable[tableName]);
+    // parentTable[tableName] = value;
+    // print(value);
+
+    List difference = [];
+
+    if (value[0] is OwnerInfo) {
+      var valueIds = value.map((e) => e.inn).toSet();
+
+      for (var item in parentTable[tableName]!) {
+        if (!valueIds.contains(item.inn)) {
+          difference.add(item);
+        }
+      }
+
+      for (var e in difference) {
+        parentTable[tableName]?.removeWhere(
+          (element) => element.inn == e.inn,
+        );
+      }
+    } else {
+      var valueIds = value.map((e) => e.id).toSet();
+
+      for (var item in parentTable[tableName]!) {
+        if (!valueIds.contains(item.id)) {
+          difference.add(item);
+        }
+      }
+
+      for (var e in difference) {
+        parentTable[tableName]?.removeWhere(
+          (element) => element.id == e.id,
+        );
+      }
+    }
+
+    print(parentTable[tableName]);
   }
 }

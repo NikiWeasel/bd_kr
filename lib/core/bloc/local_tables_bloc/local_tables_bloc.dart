@@ -31,6 +31,9 @@ class LocalTablesBloc extends Bloc<LocalTablesEvent, LocalTablesState> {
       emit(LocalTablesLoading());
       try {
         localTables.addElement(event.tableName, event.value);
+
+        print('localTables.parentTable[event.tableName]');
+        print(localTables.parentTable[event.tableName]);
         emit(LocalTablesLoaded(allTables: localTables));
       } catch (e) {
         print(e.toString());
@@ -66,12 +69,15 @@ class LocalTablesBloc extends Bloc<LocalTablesEvent, LocalTablesState> {
     on<SearchLocalTableRow>((event, emit) async {
       emit(LocalTablesLoading());
       try {
-        var newTables =
-            await sqlService.searchInTable(event.tableRow, event.sqList);
+        var newTable = await sqlService.searchInTable(
+            allTables: localTables,
+            tableRow: event.tableRow,
+            sqList: event.sqList);
         // var newTables = AllTables.emptyTables();
+        print('localTables.parentTable[event.tableName]');
+        print(localTables.parentTable[event.tableName]);
 
-        localTables.insertFilteredTable(
-            event.tableName, newTables.parentTable[event.tableName]!);
+        localTables.insertFilteredTable(event.tableName, newTable);
 
         emit(LocalTablesLoaded(allTables: localTables));
       } catch (e) {

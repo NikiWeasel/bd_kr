@@ -25,15 +25,17 @@ class SearhQueryWidget extends StatefulWidget {
 
 class _SearhQueryWidgetState extends State<SearhQueryWidget> {
   late List<DropdownMenuEntry> tableQTypesList;
-  late dynamic selectedColumn;
-  String? selectedType;
+  late String selectedColumn;
+  late dynamic selectedColumnValue;
+  String selectedType = '';
   String enteredString = '';
 
   @override
   void initState() {
     super.initState();
     tableQTypesList = List.from(widget.tableQTypesDropdownMenuEntryList);
-    selectedColumn = widget.tableColumnsDropdownMenuEntryList.first.value;
+    selectedColumn = widget.tableColumnsDropdownMenuEntryList.first.label;
+    // print(selectedColumn[0].);
 
     selectedType =
         tableQTypesList.isNotEmpty ? tableQTypesList.first.value : null;
@@ -41,10 +43,13 @@ class _SearhQueryWidgetState extends State<SearhQueryWidget> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.tableColumnsDropdownMenuEntryList.first.label);
+
     void changeTypes() {
       setState(() {
-        selectedType = null;
-        if (selectedColumn is String) {
+        selectedType = '';
+        if (selectedColumnValue is String) {
+          tableQTypesList = List.from(widget.tableQTypesDropdownMenuEntryList);
           tableQTypesList = List.from(tableQTypesList.sublist(5, 7));
         } else {
           tableQTypesList = List.from(widget.tableQTypesDropdownMenuEntryList);
@@ -55,12 +60,13 @@ class _SearhQueryWidgetState extends State<SearhQueryWidget> {
     void onChange() {
       final sq = SearchQuery(
           searchColumn: selectedColumn,
-          searchType: selectedType!,
+          searchType: selectedType,
           searchString: enteredString);
 
-      if (enteredString.isEmpty || selectedType == null) {
+      if (enteredString.isEmpty) {
         return;
       }
+      print('save qs');
       widget.onSaveQuary(widget.index, sq);
     }
 
@@ -96,7 +102,16 @@ class _SearhQueryWidgetState extends State<SearhQueryWidget> {
                         : null,
                     onSelected: (value) {
                       if (value == null) return;
-                      selectedColumn = value;
+                      print(value);
+                      // print(tableQTypesList[0].label);
+                      // print(tableQTypesList[0].value);
+                      final selectedEntry = widget
+                          .tableColumnsDropdownMenuEntryList
+                          .firstWhere((entry) => entry.value == value!);
+
+                      selectedColumn = selectedEntry.label;
+                      selectedColumnValue = selectedEntry.value;
+                      print(selectedColumn);
 
                       print('ONTAP');
                       changeTypes();
