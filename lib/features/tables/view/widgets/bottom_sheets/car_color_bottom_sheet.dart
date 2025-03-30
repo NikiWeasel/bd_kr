@@ -85,6 +85,7 @@ class _CarColorBottomSheetState extends State<CarColorBottomSheet> {
               height: 16,
             ),
             TextFormField(
+              readOnly: widget.carColor != null,
               controller: idController,
               decoration: InputDecoration(
                 label: const Text('id'),

@@ -59,8 +59,8 @@ class AllTables {
   void insertFilteredTable(String tableName, List<dynamic> value) {
     // parentTable = Map.from(parentTable)..[tableName] = value;
 
-    print('parentTable[tableName]');
-    print(parentTable[tableName]);
+    // print('parentTable[tableName]');
+    // print(parentTable[tableName]);
     // parentTable[tableName] = value;
     // print(value);
 
@@ -96,6 +96,6 @@ class AllTables {
       }
     }
 
-    print(parentTable[tableName]);
+    // print(parentTable[tableName]);
   }
 }

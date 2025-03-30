@@ -130,6 +130,7 @@ class _NoteBottomSheetState extends State<NoteBottomSheet> {
     TextEditingController controller,
   ) {
     return TextFormField(
+      readOnly: (widget.note != null && label == 'ID'),
       controller: controller,
       decoration: InputDecoration(
         labelText: label,

@@ -339,6 +339,7 @@ class _CarBottomSheetState extends State<CarBottomSheet> {
   TextFormField _buildTextField(
       String label, TextEditingController controller) {
     return TextFormField(
+      readOnly: (widget.car != null && label == 'ID'),
       controller: controller,
       decoration: InputDecoration(
         labelText: label,

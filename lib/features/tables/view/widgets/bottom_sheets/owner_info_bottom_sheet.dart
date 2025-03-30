@@ -177,6 +177,7 @@ class _OwnerInfoBottomSheetState extends State<OwnerInfoBottomSheet> {
   TextFormField _buildTextField(
       String label, TextEditingController controller) {
     return TextFormField(
+      readOnly: (widget.ownerInfo != null && label == 'INN'),
       controller: controller,
       decoration: InputDecoration(
         labelText: label,

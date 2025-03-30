@@ -221,6 +221,7 @@ class _InspectionBottomSheetState extends State<InspectionBottomSheet> {
   TextFormField _buildTextField(
       String label, TextEditingController controller) {
     return TextFormField(
+      readOnly: (widget.inspection != null && label == 'ID'),
       controller: controller,
       decoration: InputDecoration(
         labelText: label,

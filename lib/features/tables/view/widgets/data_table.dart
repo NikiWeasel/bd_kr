@@ -94,7 +94,7 @@ class _MyDataTableState extends State<MyDataTable> {
     var tableMap =
         (widget.table[0].toMap() as Map<String, dynamic>).keys.toList();
 
-    print(dataList);
+    // print(dataList);
     return Table(
       border: TableBorder.all(color: Theme.of(context).colorScheme.onSurface),
       children: [

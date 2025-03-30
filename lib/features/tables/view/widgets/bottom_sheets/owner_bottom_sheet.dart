@@ -94,6 +94,7 @@ class _OwnerBottomSheetState extends State<OwnerBottomSheet> {
             ),
             const SizedBox(height: 16),
             TextFormField(
+              readOnly: widget.owner != null,
               controller: idController,
               decoration: InputDecoration(
                 label: const Text('id'),

@@ -58,6 +58,10 @@ class SqlService {
     }
 
     // print(myPath);
+    await db.execute('PRAGMA foreign_keys = ON;');
+
+    // final result = await db.rawQuery('PRAGMA foreign_keys;');
+    // print(result); // Должно вернуть [{foreign_keys: 1}], если включено.
     return db;
   }
 
@@ -119,7 +123,7 @@ CREATE TABLE owners (
   id INTEGER PRIMARY KEY,
   owner_type TEXT,
   inn TEXT,
-  FOREIGN KEY (inn) REFERENCES owner_info (inn)
+  FOREIGN KEY (inn) REFERENCES owner_info (inn) ON DELETE CASCADE
 );
 ''');
 
@@ -133,9 +137,9 @@ CREATE TABLE owner_info (
   house TEXT,
   apartment TEXT,
   organization_head TEXT,
-  FOREIGN KEY (city_id) REFERENCES cities (id),
-  FOREIGN KEY (district_id) REFERENCES districts (id),
-  FOREIGN KEY (street_id) REFERENCES streets (id)
+  FOREIGN KEY (city_id) REFERENCES cities (id) ON DELETE CASCADE,
+  FOREIGN KEY (district_id) REFERENCES districts (id) ON DELETE CASCADE,
+  FOREIGN KEY (street_id) REFERENCES streets (id) ON DELETE CASCADE
 );
 ''');
 
@@ -144,7 +148,7 @@ CREATE TABLE phones (
   id INTEGER PRIMARY KEY,
   owner_id INTEGER,
   phone_number TEXT,
-  FOREIGN KEY (owner_id) REFERENCES owners (id)
+  FOREIGN KEY (owner_id) REFERENCES owners (id) ON DELETE CASCADE
 );
 ''');
 
@@ -167,10 +171,10 @@ CREATE TABLE cars (
   body_type_id INTEGER,
   brand_id INTEGER,
   owner_id INTEGER,
-  FOREIGN KEY (color_id) REFERENCES car_colors (id),
-  FOREIGN KEY (body_type_id) REFERENCES car_body_types (id),
-  FOREIGN KEY (brand_id) REFERENCES car_brands (id),
-  FOREIGN KEY (owner_id) REFERENCES owners (id)
+  FOREIGN KEY (color_id) REFERENCES car_colors (id) ON DELETE CASCADE,
+  FOREIGN KEY (body_type_id) REFERENCES car_body_types (id) ON DELETE CASCADE,
+  FOREIGN KEY (brand_id) REFERENCES car_brands (id) ON DELETE CASCADE,
+  FOREIGN KEY (owner_id) REFERENCES owners (id) ON DELETE CASCADE
 );
 ''');
 
@@ -185,7 +189,7 @@ CREATE TABLE inspections (
   inspection_fee REAL,
   sign_fee REAL,
   car_id INTEGER,
-  FOREIGN KEY (car_id) REFERENCES cars (id)
+  FOREIGN KEY (car_id) REFERENCES cars (id) ON DELETE CASCADE
 );
 ''');
 
@@ -194,7 +198,7 @@ CREATE TABLE notes (
   id INTEGER PRIMARY KEY,
   car_id INTEGER,
   content TEXT,
-  FOREIGN KEY (car_id) REFERENCES cars (id)
+  FOREIGN KEY (car_id) REFERENCES cars (id) ON DELETE CASCADE
 );
 ''');
   }
@@ -408,17 +412,29 @@ CREATE TABLE notes (
 
     var tableRowMap = (tableRow.toMap() as Map<String, dynamic>);
 
-    db.update(tableRow.getTableName(), replaceBools(tableRowMap),
-        where: tableRow is OwnerInfo
-            ? 'id = \'${tableRow.inn}\''
-            : 'id = \'${tableRow.id}\'');
+    await db.transaction((txn) async {
+      await txn.update(tableRow.getTableName(), replaceBools(tableRowMap),
+          where: tableRow is OwnerInfo
+              ? 'inn = \'${tableRow.inn}\''
+              : 'id = \'${tableRow.id}\'');
+    });
+    // db.update(tableRow.getTableName(), replaceBools(tableRowMap),
+    //     where: tableRow is OwnerInfo
+    //         ? 'inn = \'${tableRow.inn}\''
+    //         : 'id = \'${tableRow.id}\'');
   }
 
   void deleteTableRow(dynamic tableRowToDelete) async {
     final db = await _getDatabase();
 
-    db.delete(tableRowToDelete.getTableName(),
-        where: 'id = \'${tableRowToDelete.id}\'');
+    await db.transaction((txn) async {
+      await txn.delete(tableRowToDelete.getTableName(),
+          where: tableRowToDelete is OwnerInfo
+              ? 'inn = \'${tableRowToDelete.inn}\''
+              : 'id = \'${tableRowToDelete.id}\'');
+    });
+    // await db.delete(tableRowToDelete.getTableName(),
+    //     where: 'id = \'${tableRowToDelete.id}\'');
 
     // state = state.where((m) => m.id != noteToDelete.id).toList();
   }

@@ -86,6 +86,7 @@ class _CarBrandBottomSheetState extends State<CarBrandBottomSheet> {
               height: 16,
             ),
             TextFormField(
+              readOnly: widget.carBrand != null,
               controller: idController,
               decoration: InputDecoration(
                 label: const Text('id'),

@@ -68,8 +68,7 @@ class _CarBodyTypeBottomSheetState extends State<CarBodyTypeBottomSheet> {
               children: [
                 Text(
                   widget.carBodyType == null ? 'Добавить' : 'Изменить',
-                  style: Theme
-                      .of(context)
+                  style: Theme.of(context)
                       .textTheme
                       .titleLarge!
                       .copyWith(fontWeight: FontWeight.bold),
@@ -88,6 +87,7 @@ class _CarBodyTypeBottomSheetState extends State<CarBodyTypeBottomSheet> {
             ),
             TextFormField(
               controller: idController,
+              readOnly: widget.carBodyType != null,
               decoration: InputDecoration(
                 label: const Text('id'),
                 border: OutlineInputBorder(

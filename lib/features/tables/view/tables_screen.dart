@@ -268,7 +268,7 @@ class _TablesScreenState extends State<TablesScreen> {
         //   showSnackBar(context, 'Загрузка...',
         //       duration: const Duration(seconds: 60));
         // }
-        print(state);
+        // print(state);
 
         if (state is TableActionsAdded) {
           ScaffoldMessenger.of(context).clearSnackBars();
@@ -302,7 +302,7 @@ class _TablesScreenState extends State<TablesScreen> {
       },
       child: BlocBuilder<LocalTablesBloc, LocalTablesState>(
         builder: (context, state) {
-          print(state);
+          // print(state);
 
           if (state is LocalTablesLoaded) {
             // print(state.allTables.parentTable);
@@ -387,8 +387,7 @@ class _TablesScreenState extends State<TablesScreen> {
                                                     .isEmpty)
                                             ? const SizedBox.shrink()
                                             : SearhQueryWidget(
-                                                key: ValueKey(
-                                                    searchQueryList[i]),
+                                                key: UniqueKey(),
                                                 index: i,
                                                 onSaveQuary: onSaveQuary,
                                                 tableColumnsDropdownMenuEntryList:
@@ -467,7 +466,7 @@ class _TablesScreenState extends State<TablesScreen> {
                                   heroTag: 'search',
                                   onPressed: () {
                                     if (activeTable.isEmpty) return;
-                                    print(searchQueryList);
+                                    // print(searchQueryList);
 
                                     if (searchQueryList.any(
                                           (element) =>

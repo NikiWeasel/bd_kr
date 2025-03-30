@@ -126,6 +126,7 @@ class _PhoneBottomSheetState extends State<PhoneBottomSheet> {
   TextFormField _buildTextField(
       String label, TextEditingController controller) {
     return TextFormField(
+      readOnly: (widget.phone != null && label == 'ID'),
       controller: controller,
       decoration: InputDecoration(
         labelText: label,

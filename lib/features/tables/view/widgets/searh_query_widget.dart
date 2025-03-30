@@ -30,20 +30,40 @@ class _SearhQueryWidgetState extends State<SearhQueryWidget> {
   String selectedType = '';
   String enteredString = '';
 
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   tableQTypesList = List.from(widget.tableQTypesDropdownMenuEntryList);
+  //   selectedColumn = widget.tableColumnsDropdownMenuEntryList.first.label;
+  //   // print(selectedColumn[0].);
+  //
+  //   selectedType =
+  //       tableQTypesList.isNotEmpty ? tableQTypesList.first.value : null;
+  // }
+
   @override
   void initState() {
     super.initState();
+
+    // Начинаем с полного списка операторов
     tableQTypesList = List.from(widget.tableQTypesDropdownMenuEntryList);
-    selectedColumn = widget.tableColumnsDropdownMenuEntryList.first.label;
-    // print(selectedColumn[0].);
+
+    // Безопасно устанавливаем начальные значения
+    selectedColumn = widget.tableColumnsDropdownMenuEntryList.isNotEmpty
+        ? widget.tableColumnsDropdownMenuEntryList.first.label
+        : '';
+
+    selectedColumnValue = widget.tableColumnsDropdownMenuEntryList.isNotEmpty
+        ? widget.tableColumnsDropdownMenuEntryList.first.value
+        : null;
 
     selectedType =
-        tableQTypesList.isNotEmpty ? tableQTypesList.first.value : null;
+        tableQTypesList.isNotEmpty ? tableQTypesList.first.value : '';
   }
 
   @override
   Widget build(BuildContext context) {
-    print(widget.tableColumnsDropdownMenuEntryList.first.label);
+    // print(widget.tableColumnsDropdownMenuEntryList);
 
     void changeTypes() {
       setState(() {
@@ -70,6 +90,10 @@ class _SearhQueryWidgetState extends State<SearhQueryWidget> {
       widget.onSaveQuary(widget.index, sq);
     }
 
+    if (widget.tableColumnsDropdownMenuEntryList.isEmpty ||
+        widget.tableQTypesDropdownMenuEntryList.isEmpty) {
+      return const SizedBox.shrink();
+    }
     return Column(
       children: [
         (widget.index == 0)
@@ -92,29 +116,47 @@ class _SearhQueryWidgetState extends State<SearhQueryWidget> {
         Row(
           children: [
             widget.tableColumnsDropdownMenuEntryList.isNotEmpty
-                ? DropdownMenu(
-                    width: 162,
-                    dropdownMenuEntries:
-                        widget.tableColumnsDropdownMenuEntryList,
-                    initialSelection: widget
-                            .tableColumnsDropdownMenuEntryList.isNotEmpty
-                        ? widget.tableColumnsDropdownMenuEntryList.first.value
-                        : null,
-                    onSelected: (value) {
-                      if (value == null) return;
-                      print(value);
-                      // print(tableQTypesList[0].label);
-                      // print(tableQTypesList[0].value);
-                      final selectedEntry = widget
-                          .tableColumnsDropdownMenuEntryList
-                          .firstWhere((entry) => entry.value == value!);
+                ? Builder(
+                    builder: (context) {
+                      try {
+                        return DropdownMenu(
+                          width: 162,
+                          dropdownMenuEntries:
+                              widget.tableColumnsDropdownMenuEntryList,
+                          key: ValueKey(
+                              'column_${selectedColumnValue}_${tableQTypesList.length}'),
+                          initialSelection: widget
+                                  .tableColumnsDropdownMenuEntryList.isNotEmpty
+                              ? widget
+                                  .tableColumnsDropdownMenuEntryList.first.value
+                              : null,
+                          onSelected: (value) {
+                            if (value == null) return;
+                            print('value');
+                            // print(tableQTypesList[0].label);
+                            // print(tableQTypesList[0].value);
+                            final selectedEntry = widget
+                                .tableColumnsDropdownMenuEntryList
+                                .firstWhere((entry) => entry.value == value!);
 
-                      selectedColumn = selectedEntry.label;
-                      selectedColumnValue = selectedEntry.value;
-                      print(selectedColumn);
+                            selectedColumn = selectedEntry.label;
+                            selectedColumnValue = selectedEntry.value;
+                            print(selectedColumn);
 
-                      print('ONTAP');
-                      changeTypes();
+                            print('ONTAP');
+                            try {
+                              changeTypes();
+                            } catch (e) {
+                              debugPrint('Error in changeTypes: $e');
+                              tableQTypesList = List.from(
+                                  widget.tableQTypesDropdownMenuEntryList);
+                            }
+                          },
+                        );
+                      } catch (e) {
+                        print('error' + e.toString());
+                        return const SizedBox.shrink();
+                      }
                     },
                   )
                 : const SizedBox.shrink(),

@@ -84,6 +84,8 @@ class _StreetBottomSheetState extends State<StreetBottomSheet> {
               height: 16,
             ),
             TextFormField(
+              readOnly: widget.street != null,
+              controller: idController,
               decoration: InputDecoration(
                 label: const Text('id'),
                 border: OutlineInputBorder(
@@ -104,6 +106,7 @@ class _StreetBottomSheetState extends State<StreetBottomSheet> {
               height: 8,
             ),
             TextFormField(
+              controller: streetNameController,
               decoration: InputDecoration(
                 label: const Text('Название улицы'),
                 border: OutlineInputBorder(

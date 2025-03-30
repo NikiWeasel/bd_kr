@@ -32,8 +32,8 @@ class LocalTablesBloc extends Bloc<LocalTablesEvent, LocalTablesState> {
       try {
         localTables.addElement(event.tableName, event.value);
 
-        print('localTables.parentTable[event.tableName]');
-        print(localTables.parentTable[event.tableName]);
+        // print('localTables.parentTable[event.tableName]');
+        // print(localTables.parentTable[event.tableName]);
         emit(LocalTablesLoaded(allTables: localTables));
       } catch (e) {
         print(e.toString());
@@ -74,8 +74,8 @@ class LocalTablesBloc extends Bloc<LocalTablesEvent, LocalTablesState> {
             tableRow: event.tableRow,
             sqList: event.sqList);
         // var newTables = AllTables.emptyTables();
-        print('localTables.parentTable[event.tableName]');
-        print(localTables.parentTable[event.tableName]);
+        // print('localTables.parentTable[event.tableName]');
+        // print(localTables.parentTable[event.tableName]);
 
         localTables.insertFilteredTable(event.tableName, newTable);
 

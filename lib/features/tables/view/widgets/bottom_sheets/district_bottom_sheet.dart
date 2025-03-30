@@ -81,6 +81,8 @@ class _DistrictBottomSheetState extends State<DistrictBottomSheet> {
             ),
             const SizedBox(height: 16),
             TextFormField(
+              controller: idController,
+              readOnly: widget.district != null,
               decoration: InputDecoration(
                 label: const Text('id'),
                 border: OutlineInputBorder(
@@ -99,6 +101,7 @@ class _DistrictBottomSheetState extends State<DistrictBottomSheet> {
             ),
             const SizedBox(height: 8),
             TextFormField(
+              controller: nameController,
               decoration: InputDecoration(
                 label: const Text('Название'),
                 border: OutlineInputBorder(
