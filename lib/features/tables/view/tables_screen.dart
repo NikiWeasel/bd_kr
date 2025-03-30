@@ -15,12 +15,9 @@ import 'package:bd_kr/features/tables/view/widgets/data_table.dart';
 import 'package:bd_kr/features/tables/view/widgets/searh_query_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'package:bd_kr/core/bloc/table_actions_bloc/table_actions_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:bd_kr/core/bloc/local_tables_bloc/local_tables_bloc.dart';
-
 import 'package:bd_kr/core/utils/snackbar_utils.dart';
 
 class TablesScreen extends StatefulWidget {
@@ -377,55 +374,58 @@ class _TablesScreenState extends State<TablesScreen> {
                                           .textTheme
                                           .titleMedium!,
                                     ),
-                                    for (int i = 0;
-                                        i < searchQueryList.length;
-                                        i++) ...[
+                                    if (activeTable.isNotEmpty) ...[
+                                      for (int i = 0;
+                                          i < searchQueryList.length;
+                                          i++) ...[
+                                        const SizedBox(
+                                          height: 16,
+                                        ),
+                                        (tableColumnsDropdownMenuEntryList
+                                                    .isEmpty ||
+                                                tableQTypesDropdownMenuEntryList
+                                                    .isEmpty)
+                                            ? const SizedBox.shrink()
+                                            : SearhQueryWidget(
+                                                key: ValueKey(
+                                                    searchQueryList[i]),
+                                                index: i,
+                                                onSaveQuary: onSaveQuary,
+                                                tableColumnsDropdownMenuEntryList:
+                                                    tableColumnsDropdownMenuEntryList,
+                                                tableQTypesDropdownMenuEntryList:
+                                                    tableQTypesDropdownMenuEntryList,
+                                                onDeleteQuary: onDeleteQuary,
+                                              ),
+                                        const SizedBox(
+                                          height: 16,
+                                        ),
+                                        Container(
+                                            width: double.infinity,
+                                            decoration: BoxDecoration(
+                                              border: Border(
+                                                  bottom: BorderSide(
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .onSurface)),
+                                            ))
+                                      ],
                                       const SizedBox(
-                                        height: 16,
+                                        height: 8,
                                       ),
-                                      (tableColumnsDropdownMenuEntryList
-                                                  .isEmpty ||
-                                              tableQTypesDropdownMenuEntryList
-                                                  .isEmpty)
-                                          ? const SizedBox.shrink()
-                                          : SearhQueryWidget(
-                                              key: ValueKey(searchQueryList[i]),
-                                              index: i,
-                                              onSaveQuary: onSaveQuary,
-                                              tableColumnsDropdownMenuEntryList:
-                                                  tableColumnsDropdownMenuEntryList,
-                                              tableQTypesDropdownMenuEntryList:
-                                                  tableQTypesDropdownMenuEntryList,
-                                              onDeleteQuary: onDeleteQuary,
-                                            ),
-                                      const SizedBox(
-                                        height: 16,
-                                      ),
-                                      Container(
-                                          width: double.infinity,
-                                          decoration: BoxDecoration(
-                                            border: Border(
-                                                bottom: BorderSide(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .onSurface)),
-                                          ))
-                                    ],
-                                    const SizedBox(
-                                      height: 8,
-                                    ),
-                                    Align(
-                                        alignment: Alignment.center,
-                                        child: IconButton(
-                                            onPressed: () {
-                                              if (activeTable.isEmpty) {
-                                                showSnackbar(
-                                                    'Выбeрите таблицу');
-                                                return;
-                                              }
-                                              addSearchQuary();
-                                            },
-                                            icon: const Icon(Icons.add))),
+                                      Align(
+                                          alignment: Alignment.center,
+                                          child: IconButton(
+                                              onPressed: () {
+                                                if (activeTable.isEmpty) {
+                                                  showSnackbar(
+                                                      'Выбeрите таблицу');
+                                                  return;
+                                                }
+                                                addSearchQuary();
+                                              },
+                                              icon: const Icon(Icons.add))),
+                                    ]
                                   ],
                                 ),
                               ),

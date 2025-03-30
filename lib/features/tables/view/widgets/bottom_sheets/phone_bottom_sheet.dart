@@ -35,7 +35,7 @@ class _PhoneBottomSheetState extends State<PhoneBottomSheet> {
     newPhone = Phone(
       id: enteredId ?? 0, // Если enteredId null, по умолчанию 0
       ownerId: enteredOwnerId,
-      number: enteredNumber,
+      phoneNumber: enteredNumber,
     );
     return true;
   }
@@ -50,12 +50,12 @@ class _PhoneBottomSheetState extends State<PhoneBottomSheet> {
     if (widget.phone != null) {
       enteredId = widget.phone!.id;
       enteredOwnerId = widget.phone!.ownerId;
-      enteredNumber = widget.phone!.number;
+      enteredNumber = widget.phone!.phoneNumber;
 
       // Заполнение контроллеров
       idController.text = widget.phone!.id.toString();
       ownerIdController.text = widget.phone!.ownerId?.toString() ?? '';
-      numberController.text = widget.phone!.number ?? '';
+      numberController.text = widget.phone!.phoneNumber ?? '';
     }
   }
 

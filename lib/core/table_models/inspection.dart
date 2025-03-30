@@ -6,23 +6,23 @@ part 'inspection.g.dart';
 class Inspection {
   final int id;
   final String? inspectorName;
-  final String? date;
+  final DateTime? inspectionDate;
   final String? failureReasons;
   final bool? passed;
   final int? mileage;
   final double? inspectionFee;
-  final double? stickerFee;
+  final double? signFee;
   final int? carId;
 
   Inspection({
     required this.id,
     this.inspectorName,
-    this.date,
+    this.inspectionDate,
     this.failureReasons,
     this.passed,
     this.mileage,
     this.inspectionFee,
-    this.stickerFee,
+    this.signFee,
     this.carId,
   });
 

@@ -3,6 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:bd_kr/core/bloc/table_actions_bloc/table_actions_bloc.dart';
 import 'package:bd_kr/core/table_models/inspection.dart';
+import 'package:intl/intl.dart';
+
+import 'package:bd_kr/core/utils/format_date.dart';
 
 class InspectionBottomSheet extends StatefulWidget {
   const InspectionBottomSheet({super.key, required this.inspection});
@@ -16,19 +19,18 @@ class InspectionBottomSheet extends StatefulWidget {
 class _InspectionBottomSheetState extends State<InspectionBottomSheet> {
   late TextEditingController idController;
   late TextEditingController inspectorNameController;
-  late TextEditingController dateController;
   late TextEditingController failureReasonsController;
-  late TextEditingController passedController;
   late TextEditingController mileageController;
   late TextEditingController inspectionFeeController;
   late TextEditingController stickerFeeController;
   late TextEditingController carIdController;
 
-  int? enteredId;
+  bool didPass = false;
+  DateTime? pickedDate;
+
+  late int enteredId;
   String? enteredInspectorName;
-  String? enteredDate;
   String? enteredFailureReasons;
-  bool? enteredPassed;
   int? enteredMileage;
   double? enteredInspectionFee;
   double? enteredStickerFee;
@@ -38,6 +40,22 @@ class _InspectionBottomSheetState extends State<InspectionBottomSheet> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  Future<DateTime?> _showDatePicker() async {
+    var firstDate = DateTime(1970, 1, 1);
+    var lastDate = DateTime.now();
+
+    var pickedDate = await showDatePicker(
+        context: context, firstDate: firstDate, lastDate: lastDate);
+    return pickedDate;
+  }
+
+  void setPickedDate() async {
+    var val = await _showDatePicker();
+    setState(() {
+      pickedDate = val;
+    });
+  }
+
   bool _submit() {
     var isValid = _formKey.currentState!.validate();
     if (!isValid) {
@@ -45,15 +63,15 @@ class _InspectionBottomSheetState extends State<InspectionBottomSheet> {
     }
     _formKey.currentState!.save();
     newInspection = Inspection(
-      id: widget.inspection?.id ?? 0,
+      id: enteredId,
       // Assuming the ID is required and should default to 0 if null
       inspectorName: enteredInspectorName,
-      date: enteredDate,
+      inspectionDate: pickedDate,
       failureReasons: enteredFailureReasons,
-      passed: enteredPassed,
+      passed: didPass,
       mileage: enteredMileage,
       inspectionFee: enteredInspectionFee,
-      stickerFee: enteredStickerFee,
+      signFee: enteredStickerFee,
       carId: enteredCarId,
     );
 
@@ -65,9 +83,7 @@ class _InspectionBottomSheetState extends State<InspectionBottomSheet> {
     super.initState();
     idController = TextEditingController();
     inspectorNameController = TextEditingController();
-    dateController = TextEditingController();
     failureReasonsController = TextEditingController();
-    passedController = TextEditingController();
     mileageController = TextEditingController();
     inspectionFeeController = TextEditingController();
     stickerFeeController = TextEditingController();
@@ -76,24 +92,21 @@ class _InspectionBottomSheetState extends State<InspectionBottomSheet> {
     if (widget.inspection != null) {
       enteredId = widget.inspection!.id;
       enteredInspectorName = widget.inspection!.inspectorName;
-      enteredDate = widget.inspection!.date;
       enteredFailureReasons = widget.inspection!.failureReasons;
-      enteredPassed = widget.inspection!.passed;
       enteredMileage = widget.inspection!.mileage;
       enteredInspectionFee = widget.inspection!.inspectionFee;
-      enteredStickerFee = widget.inspection!.stickerFee;
+      enteredStickerFee = widget.inspection!.signFee;
       enteredCarId = widget.inspection!.carId;
 
+      pickedDate = widget.inspection!.inspectionDate;
+      didPass = widget.inspection!.passed ?? false;
       idController.text = widget.inspection!.id.toString();
       inspectorNameController.text = widget.inspection!.inspectorName ?? '';
-      dateController.text = widget.inspection!.date ?? '';
       failureReasonsController.text = widget.inspection!.failureReasons ?? '';
-      passedController.text = widget.inspection!.passed?.toString() ?? '';
       mileageController.text = widget.inspection!.mileage?.toString() ?? '';
       inspectionFeeController.text =
           widget.inspection!.inspectionFee?.toString() ?? '';
-      stickerFeeController.text =
-          widget.inspection!.stickerFee?.toString() ?? '';
+      stickerFeeController.text = widget.inspection!.signFee?.toString() ?? '';
       carIdController.text = widget.inspection!.carId?.toString() ?? '';
     }
   }
@@ -103,9 +116,7 @@ class _InspectionBottomSheetState extends State<InspectionBottomSheet> {
     super.dispose();
     idController.dispose();
     inspectorNameController.dispose();
-    dateController.dispose();
     failureReasonsController.dispose();
-    passedController.dispose();
     mileageController.dispose();
     inspectionFeeController.dispose();
     stickerFeeController.dispose();
@@ -144,11 +155,38 @@ class _InspectionBottomSheetState extends State<InspectionBottomSheet> {
             const SizedBox(height: 8),
             _buildTextField('Inspector Name', inspectorNameController),
             const SizedBox(height: 8),
-            _buildTextField('Date', dateController),
+            Row(
+              children: [
+                Text(
+                  'Date:',
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+                TextButton.icon(
+                  onPressed: setPickedDate,
+                  icon: const Icon(Icons.calendar_month_rounded),
+                  label: Text(formatDate(pickedDate)),
+                ),
+              ],
+            ),
             const SizedBox(height: 8),
             _buildTextField('Failure Reasons', failureReasonsController),
             const SizedBox(height: 8),
-            _buildTextField('Passed', passedController),
+            ListTile(
+              leading: Checkbox(
+                onChanged: (value) {
+                  setState(() {
+                    didPass = !didPass;
+                  });
+                },
+                value: didPass,
+              ),
+              onTap: () {
+                setState(() {
+                  didPass = !didPass;
+                });
+              },
+              title: const Text('Passed'),
+            ),
             const SizedBox(height: 8),
             _buildTextField('Mileage', mileageController),
             const SizedBox(height: 8),
@@ -198,11 +236,11 @@ class _InspectionBottomSheetState extends State<InspectionBottomSheet> {
       },
       onSaved: (value) {
         switch (label) {
+          case 'ID':
+            enteredId = int.tryParse(value ?? '')!;
+            break;
           case 'Inspector Name':
             enteredInspectorName = value;
-            break;
-          case 'Date':
-            enteredDate = value;
             break;
           case 'Failure Reasons':
             enteredFailureReasons = value;
@@ -215,6 +253,9 @@ class _InspectionBottomSheetState extends State<InspectionBottomSheet> {
             break;
           case 'Sticker Fee':
             enteredStickerFee = double.tryParse(value ?? '');
+            break;
+          case 'Car ID':
+            enteredCarId = int.tryParse(value ?? '');
             break;
         }
       },

@@ -193,7 +193,7 @@ CREATE TABLE inspections (
 CREATE TABLE notes (
   id INTEGER PRIMARY KEY,
   car_id INTEGER,
-  note TEXT,
+  content TEXT,
   FOREIGN KEY (car_id) REFERENCES cars (id)
 );
 ''');
@@ -208,7 +208,7 @@ CREATE TABLE notes (
       query += ' WHERE $where';
     }
 
-    print(query);
+    // print(query);
 
     final result = await db.rawQuery(query);
 
@@ -281,7 +281,7 @@ CREATE TABLE notes (
             .map((row) => Phone(
                   id: row['id'] as int,
                   ownerId: row['owner_id'] as int?,
-                  number: row['phone_number'] as String?,
+                  phoneNumber: row['phone_number'] as String?,
                 ))
             .toList();
       case 'cars':
@@ -295,13 +295,13 @@ CREATE TABLE notes (
                       row['all_wheel_drive'] as int == 1 ? true : false,
                   licensePlate: row['license_plate'] as String?,
                   model: row['model'] as String?,
-                  steeringWheel: row['steering'] as String?,
+                  steeringWheel: row['steering_wheel'] as String?,
                   annualTax: row['annual_tax'] as double?,
                   year: row['year'] as int?,
                   engineNumber: row['engine_number'] as String?,
                   stolen: row['stolen'] as int == 1 ? true : false,
-                  returnDate: row['return_date'] as String?,
-                  theftDate: row['theft_date'] as String?,
+                  returnDate: DateTime.tryParse(row['return_date'] as String),
+                  theftDate: DateTime.tryParse(row['theft_date'] as String),
                   bodyTypeId: row['body_type_id'] as int?,
                   brandId: row['brand_id'] as int?,
                   ownerId: row['owner_id'] as int?,
@@ -312,12 +312,13 @@ CREATE TABLE notes (
             .map((row) => Inspection(
                   id: row['id'] as int,
                   inspectorName: row['inspector_name'] as String?,
-                  date: row['inspection_date'] as String?,
+                  inspectionDate:
+                      DateTime.tryParse(row['inspection_date'] as String),
                   failureReasons: row['failure_reasons'] as String?,
                   passed: row['passed'] as int == 1 ? true : false,
                   mileage: row['mileage'] as int?,
                   inspectionFee: row['inspection_fee'] as double?,
-                  stickerFee: row['sign_fee'] as double?,
+                  signFee: row['sign_fee'] as double?,
                   carId: row['car_id'] as int?,
                 ))
             .toList();
@@ -326,7 +327,7 @@ CREATE TABLE notes (
             .map((row) => Note(
                   id: row['id'] as int,
                   carId: row['car_id'] as int?,
-                  content: row['note'] as String?,
+                  content: row['content'] as String?,
                 ))
             .toList();
       default:

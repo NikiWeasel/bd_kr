@@ -16,8 +16,8 @@ class Car {
   final int? year;
   final String? engineNumber;
   final bool? stolen;
-  final String? returnDate;
-  final String? theftDate;
+  final DateTime? returnDate;
+  final DateTime? theftDate;
   final int? bodyTypeId;
   final int? brandId;
   final int? ownerId;

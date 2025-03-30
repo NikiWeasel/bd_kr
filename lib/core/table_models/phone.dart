@@ -6,12 +6,12 @@ part 'phone.g.dart';
 class Phone {
   final int id;
   final int? ownerId;
-  final String? number;
+  final String? phoneNumber;
 
   Phone({
     required this.id,
     this.ownerId,
-    this.number,
+    this.phoneNumber,
   });
 
   Map<String, dynamic> toMap() => _$PhoneToJson(this);

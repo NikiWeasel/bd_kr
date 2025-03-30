@@ -13,6 +13,9 @@ import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:sqlite3/open.dart';
 import 'package:sqlite3/sqlite3.dart';
+import 'package:intl/date_symbol_data_local.dart';
+
+
 
 // import 'package:flutter/foundation.dart';
 
@@ -30,8 +33,11 @@ ffi.DynamicLibrary _openSqliteUnderWindows() {
   return ffi.DynamicLibrary.open('sqlite3.dll');
 }
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await initializeDateFormatting('ru', null);
+
 
   // if ((defaultTargetPlatform == TargetPlatform.windows ||
   //         defaultTargetPlatform == TargetPlatform.linux) &&

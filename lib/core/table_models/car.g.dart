@@ -19,8 +19,12 @@ Car _$CarFromJson(Map<String, dynamic> json) => Car(
       year: (json['year'] as num?)?.toInt(),
       engineNumber: json['engine_number'] as String?,
       stolen: json['stolen'] as bool?,
-      returnDate: json['return_date'] as String?,
-      theftDate: json['theft_date'] as String?,
+      returnDate: json['return_date'] == null
+          ? null
+          : DateTime.parse(json['return_date'] as String),
+      theftDate: json['theft_date'] == null
+          ? null
+          : DateTime.parse(json['theft_date'] as String),
       bodyTypeId: (json['body_type_id'] as num?)?.toInt(),
       brandId: (json['brand_id'] as num?)?.toInt(),
       ownerId: (json['owner_id'] as num?)?.toInt(),
@@ -39,8 +43,8 @@ Map<String, dynamic> _$CarToJson(Car instance) => <String, dynamic>{
       'year': instance.year,
       'engine_number': instance.engineNumber,
       'stolen': instance.stolen,
-      'return_date': instance.returnDate,
-      'theft_date': instance.theftDate,
+      'return_date': instance.returnDate?.toIso8601String(),
+      'theft_date': instance.theftDate?.toIso8601String(),
       'body_type_id': instance.bodyTypeId,
       'brand_id': instance.brandId,
       'owner_id': instance.ownerId,

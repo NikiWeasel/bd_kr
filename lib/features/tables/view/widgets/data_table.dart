@@ -1,3 +1,4 @@
+import 'package:bd_kr/core/utils/format_date.dart';
 import 'package:bd_kr/features/tables/view/widgets/table_dialog.dart';
 import 'package:bd_kr/features/tables/view/widgets/text_label.dart';
 import 'package:flutter/cupertino.dart';
@@ -93,6 +94,7 @@ class _MyDataTableState extends State<MyDataTable> {
     var tableMap =
         (widget.table[0].toMap() as Map<String, dynamic>).keys.toList();
 
+    print(dataList);
     return Table(
       border: TableBorder.all(color: Theme.of(context).colorScheme.onSurface),
       children: [
@@ -106,7 +108,10 @@ class _MyDataTableState extends State<MyDataTable> {
                     onLongPress: () {
                       showTableDialog(widget.table[i]);
                     },
-                    child: TextLabel(label: cell.toString())),
+                    child: TextLabel(
+                        label: cell is DateTime?
+                            ? formatDate(cell)
+                            : cell.toString())),
               )
           ])
       ],
