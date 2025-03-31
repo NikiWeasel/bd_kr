@@ -26,7 +26,7 @@ Map<String, dynamic> _$InspectionToJson(Inspection instance) =>
       'inspector_name': instance.inspectorName,
       'inspection_date': instance.inspectionDate?.toIso8601String(),
       'failure_reasons': instance.failureReasons,
-      'passed': Inspection._boolToInt(instance.passed),
+      'passed': instance.passed,
       'mileage': instance.mileage,
       'inspection_fee': instance.inspectionFee,
       'sign_fee': instance.signFee,

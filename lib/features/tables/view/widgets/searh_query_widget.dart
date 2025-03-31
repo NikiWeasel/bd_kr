@@ -69,6 +69,8 @@ class _SearhQueryWidgetState extends State<SearhQueryWidget> {
     // print(widget.tableColumnsDropdownMenuEntryList);
 
     void changeTypes() {
+      print('selectedColumnValue');
+      print(selectedColumnValue);
       setState(() {
         selectedType = '';
         if (selectedColumnValue is String) {

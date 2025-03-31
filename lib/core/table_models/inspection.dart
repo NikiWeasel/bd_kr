@@ -9,7 +9,7 @@ class Inspection {
   final DateTime? inspectionDate;
   final String? failureReasons;
 
-  @JsonKey(fromJson: _boolFromInt, toJson: _boolToInt)
+  @JsonKey(fromJson: _boolFromInt)
   final bool? passed;
 
   final int? mileage;
@@ -45,5 +45,5 @@ class Inspection {
   // Кастомные конвертеры для bool? <-> int (такие же, как в Car)
   static bool? _boolFromInt(int? value) => value == null ? null : value == 1;
 
-  static int? _boolToInt(bool? value) => value == null ? null : (value ? 1 : 0);
+// static int? _boolToInt(bool? value) => value == null ? null : (value ? 1 : 0);
 }

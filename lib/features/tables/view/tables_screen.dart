@@ -69,13 +69,19 @@ class _TablesScreenState extends State<TablesScreen> {
   void fillColumnsNames(List<dynamic> list) {
     if (list.isEmpty) return;
     // print('object');
+    // for (var t in list) {
+    //   print('t');
+    //   print(t.stolen);
+    //   // print(t.value);
+    // }
 
     tableColumnNames = (list[0].toMap() as Map<String, dynamic>);
-
     // print(tableColumnNames);
 
     tableColumnsDropdownMenuEntryList.clear();
     for (var e in tableColumnNames.entries) {
+      print(e.key);
+      print(e.value.runtimeType);
       tableColumnsDropdownMenuEntryList.add(DropdownMenuEntry(
           value: (label: e.key.toString(), value: e.value),
           label: e.key.toString()));

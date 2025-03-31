@@ -9,7 +9,9 @@ class Car {
   final int? colorId;
   final double? enginePower;
 
-  @JsonKey(fromJson: _boolFromInt, toJson: _boolToInt)
+  @JsonKey(
+    fromJson: _boolFromInt,
+  )
   final bool? allWheelDrive;
 
   final String? licensePlate;
@@ -19,7 +21,9 @@ class Car {
   final int? year;
   final String? engineNumber;
 
-  @JsonKey(fromJson: _boolFromInt, toJson: _boolToInt)
+  @JsonKey(
+    fromJson: _boolFromInt,
+  )
   final bool? stolen;
 
   final DateTime? returnDate;
@@ -60,5 +64,5 @@ class Car {
 
   static bool? _boolFromInt(int? value) => value == null ? null : value == 1;
 
-  static int? _boolToInt(bool? value) => value == null ? null : (value ? 1 : 0);
+// static int? _boolToInt(bool? value) => value == null ? null : (value ? 1 : 0);
 }
