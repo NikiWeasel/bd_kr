@@ -78,7 +78,7 @@ class _MyDataTableState extends State<MyDataTable> {
                   width: MediaQuery.of(context).size.width / 4,
                 ),
                 Text(
-                  'Пока пусто..',
+                  'Таблица ${widget.tableName} пуста.',
                   style: Theme.of(context)
                       .textTheme
                       .titleLarge!

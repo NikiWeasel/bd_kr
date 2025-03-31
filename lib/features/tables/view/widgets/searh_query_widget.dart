@@ -123,8 +123,6 @@ class _SearhQueryWidgetState extends State<SearhQueryWidget> {
                           width: 162,
                           dropdownMenuEntries:
                               widget.tableColumnsDropdownMenuEntryList,
-                          key: ValueKey(
-                              'column_${selectedColumnValue}_${tableQTypesList.length}'),
                           initialSelection: widget
                                   .tableColumnsDropdownMenuEntryList.isNotEmpty
                               ? widget

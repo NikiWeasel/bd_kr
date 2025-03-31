@@ -433,10 +433,6 @@ CREATE TABLE notes (
               ? 'inn = \'${tableRowToDelete.inn}\''
               : 'id = \'${tableRowToDelete.id}\'');
     });
-    // await db.delete(tableRowToDelete.getTableName(),
-    //     where: 'id = \'${tableRowToDelete.id}\'');
-
-    // state = state.where((m) => m.id != noteToDelete.id).toList();
   }
 
   Future<List<dynamic>> searchInTable(
@@ -446,8 +442,11 @@ CREATE TABLE notes (
     // AllTables allTables = await loadTables();
 
     // var loadedTable
-    final result = await loadTableByName(tableRow.getTableName(),
-        where: getEndOfQuery(sqList));
+    print(getEndOfQuery(sqList));
+    final result = await loadTableByName(
+      tableRow.getTableName(),
+      where: '${getEndOfQuery(sqList)} COLLATE NOCASE',
+    );
 
     // print(loadTableByName(tableRow.getTableName()));
     // print(tableRow.getTableName());

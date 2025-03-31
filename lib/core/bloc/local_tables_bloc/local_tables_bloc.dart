@@ -48,6 +48,8 @@ class LocalTablesBloc extends Bloc<LocalTablesEvent, LocalTablesState> {
         localTables.removeElement(event.tableName, event.value);
         emit(LocalTablesLoaded(allTables: localTables));
       } catch (e) {
+        print('wdsd ненавижу $e');
+
         print(e.toString());
 
         emit(LocalTablesError(errorMessage: e.toString()));
@@ -76,6 +78,8 @@ class LocalTablesBloc extends Bloc<LocalTablesEvent, LocalTablesState> {
         // var newTables = AllTables.emptyTables();
         // print('localTables.parentTable[event.tableName]');
         // print(localTables.parentTable[event.tableName]);
+
+        print(newTable);
 
         localTables.insertFilteredTable(event.tableName, newTable);
 
