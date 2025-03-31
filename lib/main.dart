@@ -15,45 +15,14 @@ import 'package:sqlite3/open.dart';
 import 'package:sqlite3/sqlite3.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
-
-
-// import 'package:flutter/foundation.dart';
-
-// // For database handling
-// import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-// import 'package:sqflite/sqflite.dart';
-//
-// // Additional packages for Windows database handling
-// import 'dart:ffi';
-// import 'dart:io';
-// import 'package:sqlite3/open.dart';
-// import 'package:sqlite3/sqlite3.dart';
-
-ffi.DynamicLibrary _openSqliteUnderWindows() {
-  return ffi.DynamicLibrary.open('sqlite3.dll');
-}
+// ffi.DynamicLibrary _openSqliteUnderWindows() {
+//   return ffi.DynamicLibrary.open('sqlite3.dll');
+// }
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await initializeDateFormatting('ru', null);
-
-
-  // if ((defaultTargetPlatform == TargetPlatform.windows ||
-  //         defaultTargetPlatform == TargetPlatform.linux) &&
-  //     !kIsWeb) {
-  //   // Initialize FFI to be able to use database with Windows/Linux
-  //   // We use 'sqflite_ffi' if Linux or Windows, else we can use default sqlite (Android/IOS/Mac)
-  //   if (defaultTargetPlatform == TargetPlatform.linux) {
-  //     sqfliteFfiInit();
-  //   } else if (defaultTargetPlatform == TargetPlatform.windows) {
-  //     open.overrideFor(OperatingSystem.windows, _openSqliteUnderWindows);
-  //     final db = sqlite3.openInMemory();
-  //     db.dispose();
-  //   }
-  // }
-  //
-  // databaseFactory = databaseFactoryFfi;
 
   SqlService sqlService = SqlService();
 

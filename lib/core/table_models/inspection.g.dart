@@ -13,7 +13,7 @@ Inspection _$InspectionFromJson(Map<String, dynamic> json) => Inspection(
           ? null
           : DateTime.parse(json['inspection_date'] as String),
       failureReasons: json['failure_reasons'] as String?,
-      passed: json['passed'] as bool?,
+      passed: Inspection._boolFromInt((json['passed'] as num?)?.toInt()),
       mileage: (json['mileage'] as num?)?.toInt(),
       inspectionFee: (json['inspection_fee'] as num?)?.toDouble(),
       signFee: (json['sign_fee'] as num?)?.toDouble(),
@@ -26,7 +26,7 @@ Map<String, dynamic> _$InspectionToJson(Inspection instance) =>
       'inspector_name': instance.inspectorName,
       'inspection_date': instance.inspectionDate?.toIso8601String(),
       'failure_reasons': instance.failureReasons,
-      'passed': instance.passed,
+      'passed': Inspection._boolToInt(instance.passed),
       'mileage': instance.mileage,
       'inspection_fee': instance.inspectionFee,
       'sign_fee': instance.signFee,

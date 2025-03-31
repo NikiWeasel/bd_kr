@@ -8,14 +8,20 @@ class Car {
   final double? engineVolume;
   final int? colorId;
   final double? enginePower;
+
+  @JsonKey(fromJson: _boolFromInt, toJson: _boolToInt)
   final bool? allWheelDrive;
+
   final String? licensePlate;
   final String? model;
   final String? steeringWheel;
   final double? annualTax;
   final int? year;
   final String? engineNumber;
+
+  @JsonKey(fromJson: _boolFromInt, toJson: _boolToInt)
   final bool? stolen;
+
   final DateTime? returnDate;
   final DateTime? theftDate;
   final int? bodyTypeId;
@@ -42,9 +48,17 @@ class Car {
     this.ownerId,
   });
 
-  Map<String, dynamic> toMap() => _$CarToJson(this);
+  factory Car.fromJson(Map<String, dynamic> json) => _$CarFromJson(json);
 
-  factory Car.fromMap(Map<String, dynamic> json) => _$CarFromJson(json);
+  Map<String, dynamic> toJson() => _$CarToJson(this);
+
+  factory Car.fromMap(Map<String, dynamic> json) => Car.fromJson(json);
+
+  Map<String, dynamic> toMap() => toJson();
 
   String getTableName() => 'cars';
+
+  static bool? _boolFromInt(int? value) => value == null ? null : value == 1;
+
+  static int? _boolToInt(bool? value) => value == null ? null : (value ? 1 : 0);
 }

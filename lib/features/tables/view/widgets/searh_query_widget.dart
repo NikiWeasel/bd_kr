@@ -2,6 +2,7 @@ import 'package:bd_kr/core/models/search_query.dart';
 import 'package:bd_kr/core/utils/snackbar_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class SearhQueryWidget extends StatefulWidget {
   const SearhQueryWidget(
@@ -29,6 +30,8 @@ class _SearhQueryWidgetState extends State<SearhQueryWidget> {
   late dynamic selectedColumnValue;
   String selectedType = '';
   String enteredString = '';
+
+  bool boolValue = false;
 
   // @override
   // void initState() {
@@ -69,24 +72,42 @@ class _SearhQueryWidgetState extends State<SearhQueryWidget> {
       setState(() {
         selectedType = '';
         if (selectedColumnValue is String) {
+          print('str');
+
           tableQTypesList = List.from(widget.tableQTypesDropdownMenuEntryList);
           tableQTypesList = List.from(tableQTypesList.sublist(5, 7));
         } else {
-          tableQTypesList = List.from(widget.tableQTypesDropdownMenuEntryList);
+          if (selectedColumnValue is bool) {
+            print('bool');
+
+            tableQTypesList =
+                List.from(widget.tableQTypesDropdownMenuEntryList);
+            tableQTypesList = List.from([tableQTypesList.first]);
+          } else {
+            print('hhhhhhhh');
+
+            tableQTypesList =
+                List.from(widget.tableQTypesDropdownMenuEntryList);
+          }
         }
       });
     }
 
     void onChange() {
-      final sq = SearchQuery(
-          searchColumn: selectedColumn,
-          searchType: selectedType,
-          searchString: enteredString);
-
       if (enteredString.isEmpty) {
         return;
       }
+      final sq = SearchQuery(
+          searchColumn: selectedColumn,
+          searchType: selectedType,
+          searchString: selectedColumnValue is! bool
+              ? enteredString
+              : (boolValue ? '1' : '0'));
+
       print('save qs');
+      // print(sq.searchColumn);
+      // print(sq.searchType);
+      // print(sq.searchString);
       widget.onSaveQuary(widget.index, sq);
     }
 
@@ -116,44 +137,38 @@ class _SearhQueryWidgetState extends State<SearhQueryWidget> {
         Row(
           children: [
             widget.tableColumnsDropdownMenuEntryList.isNotEmpty
-                ? Builder(
-                    builder: (context) {
+                ? DropdownMenu(
+                    // key: ValueKey('${widget.index}'),
+                    width: 162,
+                    dropdownMenuEntries:
+                        widget.tableColumnsDropdownMenuEntryList,
+                    initialSelection: widget
+                            .tableColumnsDropdownMenuEntryList.isNotEmpty
+                        ? widget.tableColumnsDropdownMenuEntryList.first.value
+                        : null,
+                    onSelected: (value) {
+                      if (value == null) return;
+                      // print(value);
+                      // print(tableQTypesList[0].label);
+                      // print(tableQTypesList[0].value);
+
                       try {
-                        return DropdownMenu(
-                          width: 162,
-                          dropdownMenuEntries:
-                              widget.tableColumnsDropdownMenuEntryList,
-                          initialSelection: widget
-                                  .tableColumnsDropdownMenuEntryList.isNotEmpty
-                              ? widget
-                                  .tableColumnsDropdownMenuEntryList.first.value
-                              : null,
-                          onSelected: (value) {
-                            if (value == null) return;
-                            print('value');
-                            // print(tableQTypesList[0].label);
-                            // print(tableQTypesList[0].value);
-                            final selectedEntry = widget
-                                .tableColumnsDropdownMenuEntryList
-                                .firstWhere((entry) => entry.value == value!);
+                        final selectedEntry =
+                            widget.tableColumnsDropdownMenuEntryList.firstWhere(
+                                (entry) => (entry.label == value!.label));
 
-                            selectedColumn = selectedEntry.label;
-                            selectedColumnValue = selectedEntry.value;
-                            print(selectedColumn);
+                        selectedColumn = selectedEntry.label;
+                        selectedColumnValue = selectedEntry.value.value;
+                        print(selectedColumn);
 
-                            print('ONTAP');
-                            try {
-                              changeTypes();
-                            } catch (e) {
-                              debugPrint('Error in changeTypes: $e');
-                              tableQTypesList = List.from(
-                                  widget.tableQTypesDropdownMenuEntryList);
-                            }
-                          },
-                        );
+                        print(selectedColumnValue);
+                        print('ONTAP');
+
+                        changeTypes();
                       } catch (e) {
-                        print('error' + e.toString());
-                        return const SizedBox.shrink();
+                        debugPrint('Error in changeTypes: $e');
+                        tableQTypesList =
+                            List.from(widget.tableQTypesDropdownMenuEntryList);
                       }
                     },
                   )
@@ -178,18 +193,36 @@ class _SearhQueryWidgetState extends State<SearhQueryWidget> {
         const SizedBox(
           height: 8,
         ),
-        TextFormField(
-          decoration: InputDecoration(
-            labelText: 'Значение',
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-          ),
-          onChanged: (value) {
-            enteredString = value;
-            onChange();
-          },
-        ),
+        (selectedColumnValue is! bool)
+            ? TextFormField(
+                decoration: InputDecoration(
+                  labelText: 'Значение',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                inputFormatters: (selectedColumnValue is int ||
+                        selectedColumnValue is double)
+                    ? [
+                        FilteringTextInputFormatter.digitsOnly,
+                      ]
+                    : [],
+                onChanged: (value) {
+                  enteredString = value;
+                  onChange();
+                },
+              )
+            : CheckboxListTile(
+                value: boolValue,
+                title: const Text('Значение'),
+                onChanged: (value) {
+                  setState(() {
+                    if (value == null) return;
+                    boolValue = value;
+                    enteredString = boolValue ? '1' : '0';
+                    onChange();
+                  });
+                }),
       ],
     );
   }

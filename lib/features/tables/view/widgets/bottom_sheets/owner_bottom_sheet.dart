@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:bd_kr/core/bloc/table_actions_bloc/table_actions_bloc.dart';
 
+enum OwnerType { legal, phisical }
+
 class OwnerBottomSheet extends StatefulWidget {
   const OwnerBottomSheet({super.key, required this.owner});
 
@@ -16,11 +18,11 @@ class OwnerBottomSheet extends StatefulWidget {
 
 class _OwnerBottomSheetState extends State<OwnerBottomSheet> {
   late TextEditingController idController;
-  late TextEditingController ownerTypeController;
   late TextEditingController ownerInnController;
 
+  OwnerType ownerTypeView = OwnerType.phisical;
+
   int enteredId = 0;
-  String? enteredOwnerType;
   String? enteredOwnerInn;
 
   late Owner newOwner;
@@ -35,10 +37,11 @@ class _OwnerBottomSheetState extends State<OwnerBottomSheet> {
     _formKey.currentState!.save();
     newOwner = Owner(
       id: enteredId,
-      ownerType: enteredOwnerType,
+      ownerType: ownerTypeView == OwnerType.legal ? 'legal' : 'phisical',
       inn: enteredOwnerInn,
     );
 
+    print(ownerTypeView == OwnerType.legal ? 'legal' : 'phisical');
     return true;
   }
 
@@ -46,12 +49,14 @@ class _OwnerBottomSheetState extends State<OwnerBottomSheet> {
   void initState() {
     super.initState();
     idController = TextEditingController();
-    ownerTypeController = TextEditingController();
     ownerInnController = TextEditingController();
 
     if (widget.owner != null) {
       idController.text = widget.owner!.id.toString();
-      ownerTypeController.text = widget.owner!.ownerType ?? '';
+
+      ownerTypeView = widget.owner!.ownerType == 'legal'
+          ? OwnerType.legal
+          : OwnerType.phisical;
       ownerInnController.text = widget.owner!.inn ?? '';
     }
   }
@@ -60,7 +65,6 @@ class _OwnerBottomSheetState extends State<OwnerBottomSheet> {
   void dispose() {
     super.dispose();
     idController.dispose();
-    ownerTypeController.dispose();
     ownerInnController.dispose();
   }
 
@@ -97,7 +101,7 @@ class _OwnerBottomSheetState extends State<OwnerBottomSheet> {
               readOnly: widget.owner != null,
               controller: idController,
               decoration: InputDecoration(
-                label: const Text('id'),
+                label: const Text('ID'),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
@@ -113,23 +117,32 @@ class _OwnerBottomSheetState extends State<OwnerBottomSheet> {
               },
             ),
             const SizedBox(height: 8),
-            TextFormField(
-              controller: ownerTypeController,
-              decoration: InputDecoration(
-                label: const Text('Тип владельца'),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
+            const Text('OwnerType'),
+            SegmentedButton(
+              segments: const <ButtonSegment<OwnerType>>[
+                ButtonSegment<OwnerType>(
+                  value: OwnerType.legal,
+                  label: Text('legal'),
+                  icon: Icon(Icons.chevron_left),
                 ),
-              ),
-              onSaved: (value) {
-                enteredOwnerType = value;
+                ButtonSegment<OwnerType>(
+                  value: OwnerType.phisical,
+                  label: Text('phisical'),
+                  icon: Icon(Icons.chevron_right),
+                ),
+              ],
+              selected: <OwnerType>{ownerTypeView},
+              onSelectionChanged: (Set<OwnerType> newSelection) {
+                setState(() {
+                  ownerTypeView = newSelection.first;
+                });
               },
             ),
             const SizedBox(height: 8),
             TextFormField(
               controller: ownerInnController,
               decoration: InputDecoration(
-                label: const Text('ИНН владельца'),
+                label: const Text('INN'),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),

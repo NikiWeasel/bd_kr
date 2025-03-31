@@ -68,23 +68,22 @@ class _MyDataTableState extends State<MyDataTable> {
     if (widget.table.isEmpty) {
       return Center(
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(
-              height: MediaQuery.of(context).size.height / 3,
+              height: MediaQuery.of(context).size.height / 4,
             ),
-            Row(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width / 4,
-                ),
-                Text(
-                  'Таблица ${widget.tableName} пуста.',
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  'Таблица ${widget.tableName} пуста',
                   style: Theme.of(context)
                       .textTheme
                       .titleLarge!
-                      .copyWith(fontSize: 50),
+                      .copyWith(fontSize: 35),
                 ),
-              ],
+              ),
             ),
           ],
         ),
@@ -108,10 +107,7 @@ class _MyDataTableState extends State<MyDataTable> {
                     onLongPress: () {
                       showTableDialog(widget.table[i]);
                     },
-                    child: TextLabel(
-                        label: cell is DateTime?
-                            ? formatDate(cell)
-                            : cell.toString())),
+                    child: TextLabel(label: cell.toString())),
               )
           ])
       ],

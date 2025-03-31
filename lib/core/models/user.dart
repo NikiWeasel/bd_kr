@@ -3,13 +3,15 @@ import 'package:uuid/uuid.dart';
 
 part 'user.g.dart';
 
-final Uuid uuid = Uuid();
+const Uuid uuid = Uuid();
 
 @JsonSerializable()
 class User {
   final String id;
   final String login;
   final String phoneNumber;
+
+  @JsonKey(fromJson: _boolFromInt, toJson: _boolToInt)
   final bool isAdmin;
   final String password;
 
@@ -40,4 +42,8 @@ class User {
   factory User.fromMap(Map<String, dynamic> json) => _$UserFromJson(json);
 
   String getTableName() => 'users';
+
+  static bool _boolFromInt(int? value) => value == 1;
+
+  static int _boolToInt(bool value) => value ? 1 : 0;
 }

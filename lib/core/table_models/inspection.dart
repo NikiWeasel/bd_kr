@@ -8,7 +8,10 @@ class Inspection {
   final String? inspectorName;
   final DateTime? inspectionDate;
   final String? failureReasons;
+
+  @JsonKey(fromJson: _boolFromInt, toJson: _boolToInt)
   final bool? passed;
+
   final int? mileage;
   final double? inspectionFee;
   final double? signFee;
@@ -26,10 +29,21 @@ class Inspection {
     this.carId,
   });
 
-  Map<String, dynamic> toMap() => _$InspectionToJson(this);
-
-  factory Inspection.fromMap(Map<String, dynamic> json) =>
+  factory Inspection.fromJson(Map<String, dynamic> json) =>
       _$InspectionFromJson(json);
 
+  Map<String, dynamic> toJson() => _$InspectionToJson(this);
+
+  // Для совместимости с существующим кодом
+  factory Inspection.fromMap(Map<String, dynamic> json) =>
+      Inspection.fromJson(json);
+
+  Map<String, dynamic> toMap() => toJson();
+
   String getTableName() => 'inspections';
+
+  // Кастомные конвертеры для bool? <-> int (такие же, как в Car)
+  static bool? _boolFromInt(int? value) => value == null ? null : value == 1;
+
+  static int? _boolToInt(bool? value) => value == null ? null : (value ? 1 : 0);
 }

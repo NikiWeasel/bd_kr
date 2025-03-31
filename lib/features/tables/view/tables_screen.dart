@@ -76,8 +76,9 @@ class _TablesScreenState extends State<TablesScreen> {
 
     tableColumnsDropdownMenuEntryList.clear();
     for (var e in tableColumnNames.entries) {
-      tableColumnsDropdownMenuEntryList
-          .add(DropdownMenuEntry(value: e.value, label: e.key.toString()));
+      tableColumnsDropdownMenuEntryList.add(DropdownMenuEntry(
+          value: (label: e.key.toString(), value: e.value),
+          label: e.key.toString()));
     }
     // print('tableColumnNames');
     // print(tableColumnNames);
@@ -387,7 +388,8 @@ class _TablesScreenState extends State<TablesScreen> {
                                                     .isEmpty)
                                             ? const SizedBox.shrink()
                                             : SearhQueryWidget(
-                                                key: UniqueKey(),
+                                                key: ValueKey(activeTableName +
+                                                    i.toString()),
                                                 index: i,
                                                 onSaveQuary: onSaveQuary,
                                                 tableColumnsDropdownMenuEntryList:

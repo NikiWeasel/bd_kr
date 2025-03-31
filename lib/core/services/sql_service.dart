@@ -121,7 +121,7 @@ CREATE TABLE car_body_types (
     await db.execute('''
 CREATE TABLE owners (
   id INTEGER PRIMARY KEY,
-  owner_type TEXT,
+  owner_type TEXT CHECK(owner_type IN ('legal', 'phisical')),,
   inn TEXT,
   FOREIGN KEY (inn) REFERENCES owner_info (inn) ON DELETE CASCADE
 );
@@ -212,128 +212,35 @@ CREATE TABLE notes (
       query += ' WHERE $where';
     }
 
-    // print(query);
+    print(query);
 
     final result = await db.rawQuery(query);
 
     switch (tableName) {
       case 'car_brands':
-        return result
-            .map((row) => CarBrand(
-                  id: row['id'] as int,
-                  name: row['name'] as String,
-                ))
-            .toList();
+        return result.map((row) => CarBrand.fromMap(row)).toList();
       case 'districts':
-        return result
-            .map((row) => District(
-                  id: row['id'] as int,
-                  name: row['name'] as String,
-                ))
-            .toList();
+        return result.map((row) => District.fromMap(row)).toList();
       case 'streets':
-        return result
-            .map((row) => Street(
-                  id: row['id'] as int,
-                  name: row['name'] as String,
-                ))
-            .toList();
+        return result.map((row) => Street.fromMap(row)).toList();
       case 'car_colors':
-        return result
-            .map((row) => CarColor(
-                  id: row['id'] as int,
-                  name: row['name'] as String,
-                ))
-            .toList();
+        return result.map((row) => CarColor.fromMap(row)).toList();
       case 'cities':
-        return result
-            .map((row) => City(
-                  id: row['id'] as int,
-                  name: row['name'] as String,
-                ))
-            .toList();
+        return result.map((row) => City.fromMap(row)).toList();
       case 'car_body_types':
-        return result
-            .map((row) => CarBodyType(
-                  id: row['id'] as int,
-                  name: row['name'] as String,
-                ))
-            .toList();
+        return result.map((row) => CarBodyType.fromMap(row)).toList();
       case 'owners':
-        return result
-            .map((row) => Owner(
-                  id: row['id'] as int,
-                  ownerType: row['type'] as String?,
-                  inn: row['inn'] as String?,
-                ))
-            .toList();
+        return result.map((row) => Owner.fromMap(row)).toList();
       case 'owner_info':
-        return result
-            .map((row) => OwnerInfo(
-                  ownerName: row['owner_name'] as String,
-                  inn: row['inn'] as String,
-                  cityId: row['city_id'] as int?,
-                  districtId: row['district_id'] as int?,
-                  streetId: row['street_id'] as int?,
-                  house: row['house'] as String?,
-                  apartment: row['apartment'] as String?,
-                  organizationHead: row['organization_head'] as String?,
-                ))
-            .toList();
+        return result.map((row) => OwnerInfo.fromMap(row)).toList();
       case 'phones':
-        return result
-            .map((row) => Phone(
-                  id: row['id'] as int,
-                  ownerId: row['owner_id'] as int?,
-                  phoneNumber: row['phone_number'] as String?,
-                ))
-            .toList();
+        return result.map((row) => Phone.fromMap(row)).toList();
       case 'cars':
-        return result
-            .map((row) => Car(
-                  id: row['id'] as int,
-                  engineVolume: row['engine_volume'] as double?,
-                  colorId: row['color_id'] as int?,
-                  enginePower: row['engine_power'] as double?,
-                  allWheelDrive:
-                      row['all_wheel_drive'] as int == 1 ? true : false,
-                  licensePlate: row['license_plate'] as String?,
-                  model: row['model'] as String?,
-                  steeringWheel: row['steering_wheel'] as String?,
-                  annualTax: row['annual_tax'] as double?,
-                  year: row['year'] as int?,
-                  engineNumber: row['engine_number'] as String?,
-                  stolen: row['stolen'] as int == 1 ? true : false,
-                  returnDate: DateTime.tryParse(row['return_date'] as String),
-                  theftDate: DateTime.tryParse(row['theft_date'] as String),
-                  bodyTypeId: row['body_type_id'] as int?,
-                  brandId: row['brand_id'] as int?,
-                  ownerId: row['owner_id'] as int?,
-                ))
-            .toList();
+        return result.map((row) => Car.fromMap(row)).toList();
       case 'inspections':
-        return result
-            .map((row) => Inspection(
-                  id: row['id'] as int,
-                  inspectorName: row['inspector_name'] as String?,
-                  inspectionDate:
-                      DateTime.tryParse(row['inspection_date'] as String),
-                  failureReasons: row['failure_reasons'] as String?,
-                  passed: row['passed'] as int == 1 ? true : false,
-                  mileage: row['mileage'] as int?,
-                  inspectionFee: row['inspection_fee'] as double?,
-                  signFee: row['sign_fee'] as double?,
-                  carId: row['car_id'] as int?,
-                ))
-            .toList();
+        return result.map((row) => Inspection.fromMap(row)).toList();
       case 'notes':
-        return result
-            .map((row) => Note(
-                  id: row['id'] as int,
-                  carId: row['car_id'] as int?,
-                  content: row['content'] as String?,
-                ))
-            .toList();
+        return result.map((row) => Note.fromMap(row)).toList();
       default:
         throw Exception('Таблица с именем $tableName не найдена');
     }
@@ -372,15 +279,8 @@ CREATE TABLE notes (
   Future<List<User>> loadUsers() async {
     final db = await _getDatabase();
     final dataUsers = await db.query('users');
-    final users = dataUsers
-        .map((row) => User(
-              id: row['id'] as String,
-              login: row['login'] as String,
-              isAdmin: row['is_admin'] as int == 1 ? true : false,
-              password: row['password'] as String,
-              phoneNumber: row['phone_number'] as String,
-            ))
-        .toList();
+    final users = dataUsers.map((row) => User.fromMap(row)).toList();
+    // return result.map((row) => Car.fromMap(row)).toList();
 
     return users;
   }
@@ -418,10 +318,6 @@ CREATE TABLE notes (
               ? 'inn = \'${tableRow.inn}\''
               : 'id = \'${tableRow.id}\'');
     });
-    // db.update(tableRow.getTableName(), replaceBools(tableRowMap),
-    //     where: tableRow is OwnerInfo
-    //         ? 'inn = \'${tableRow.inn}\''
-    //         : 'id = \'${tableRow.id}\'');
   }
 
   void deleteTableRow(dynamic tableRowToDelete) async {
@@ -439,23 +335,10 @@ CREATE TABLE notes (
       {required AllTables allTables,
       required dynamic tableRow,
       required List<SearchQuery> sqList}) async {
-    // AllTables allTables = await loadTables();
-
-    // var loadedTable
-    print(getEndOfQuery(sqList));
     final result = await loadTableByName(
       tableRow.getTableName(),
-      where: '${getEndOfQuery(sqList)} COLLATE NOCASE',
+      where: '${getEndOfQuery(sqList)}',
     );
-
-    // print(loadTableByName(tableRow.getTableName()));
-    // print(tableRow.getTableName());
-    //
-    // print(allTables.parentTable);
-    // print(allTables.parentTable[tableRow.getTableName()]);
-
-    // allTables.parentTable[tableRow.getTableName()] = result;
-
     return result;
   }
 
@@ -483,11 +366,11 @@ CREATE TABLE notes (
           result =
               '$result ${sqList[i].searchColumn} < ${sqList[i].searchString}';
 
-        case 'Входит':
+        case 'Начинается с':
           result =
               '$result ${sqList[i].searchColumn} LIKE \'${sqList[i].searchString}%\'';
 
-        case 'Начинается с':
+        case 'Входит':
           result =
               '$result ${sqList[i].searchColumn} LIKE \'%${sqList[i].searchString}%\'';
       }
