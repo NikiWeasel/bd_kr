@@ -34,7 +34,6 @@ class Inspection {
 
   Map<String, dynamic> toJson() => _$InspectionToJson(this);
 
-  // Для совместимости с существующим кодом
   factory Inspection.fromMap(Map<String, dynamic> json) =>
       Inspection.fromJson(json);
 
@@ -42,7 +41,6 @@ class Inspection {
 
   String getTableName() => 'inspections';
 
-  // Кастомные конвертеры для bool? <-> int (такие же, как в Car)
   static bool? _boolFromInt(int? value) => value == null ? null : value == 1;
 
 // static int? _boolToInt(bool? value) => value == null ? null : (value ? 1 : 0);
